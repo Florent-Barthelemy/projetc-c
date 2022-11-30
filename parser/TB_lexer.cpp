@@ -1,9 +1,9 @@
 #include "lexer.h"
-#include "iostream"
+#include <iostream>
 
 using namespace std;
 
-void TB_Lexer()
+void main()
 {
 	list<string> lexedList;
 	DELIM_MAP delims;
