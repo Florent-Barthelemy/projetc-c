@@ -2,8 +2,7 @@
 #include <iostream>
 
 using namespace std;
-
-void main()
+int main()
 {
 	list<string> lexedList;
 	DELIM_MAP delims;
