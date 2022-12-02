@@ -5,9 +5,9 @@ using namespace std;
 
 void gate_tb()
 {
-    ADD adder("myAdder");
-    ADD adder2("add2");
-    ADD adder3("add3");
+    AND adder("myAdder");
+    AND adder2("add2");
+    AND adder3("add3");
 
     adder2.connIn("A", adder.getOutConn("S"));
     adder2.connIn("B", adder.getOutConn("S"));

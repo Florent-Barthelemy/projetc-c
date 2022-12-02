@@ -1,6 +1,6 @@
 #include "PRIMLIB.h"
 
-void ADD::updateState()
+void AND::updateState()
 {
     LOGICSTATE newState = H;
 
