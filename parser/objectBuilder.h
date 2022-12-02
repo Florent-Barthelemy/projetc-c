@@ -8,9 +8,37 @@
 #include <queue>  //for codeWord memory
 #include <utility>
 #include <iostream>
-#include "parserStaticData.h"
+
 
 using namespace std;
+
+
+typedef string portName;
+typedef string connectedElementName;
+typedef string circuitName;
+
+/* intermediate 'Circuit element' data structure*/
+struct circuitElementProperties
+{
+    string elementType;
+
+    /*
+        Inputs & Outputs objects connected are stored
+        into two list<pair<string ObjectName, int inputID>>
+        
+        inputID specifies which I/O 'pin' number is used
+    */
+    map<connectedElementName, portName> inputElements;
+    map<connectedElementName, portName> outputElements; 
+};
+
+/*circuitElementCollection is a list of "elementName" paired to 
+its associated properties. Goal is to optimize element search during
+code analysis*/
+typedef map<string, circuitElementProperties> circuitElementCollection;
+
+/* describes a circuit element as a pair string 'name', circuitElementProperties */
+typedef pair<string, circuitElementProperties> circuitElement;
 
 /* circuit build FSM states */
 enum class circuitBuildState : uint8_t
@@ -41,8 +69,19 @@ enum class circuitBuildState : uint8_t
     CREATE_NEW_CIRCUIT_ELEMENT_END,
 
     /*  Sets the type of the newly created element  */
-    SET_ELEMENT_LABEL
+    FEILD_INITIALIZER,
+    FEILD_INITIALIZER_ASSIGN,
+    SET_ELEMENT_LABEL,
 
+
+    /*Linkage port specifier state*/
+    INPUT_PORT_SPECIFIER_BEGIN,
+    LINK_ELEMENTS,
+    INPUT_PORT_SPECIFIER_END,
+
+    FEILD_INITIALIZER_END,
+
+    DONE_INITIALIZING
 };
 
 enum token
@@ -53,6 +92,11 @@ enum token
   GRAPH_BLOCK_END,
   ELEMENT_PARAMS_BEGIN,
   ELEMENT_PARAMS_END,
+
+  INPUT_PORT_SPECIFIER_START,
+  INPUT_PORT_SPECIFIER_END,
+
+
   EQUAL_SIGN,
   END_LINE_OF_CODE,
   LINKAGE,
@@ -64,44 +108,24 @@ enum elementFeildInitializer
     LABEL,
 };
 
-/* intermediate 'Circuit element' data structure
+
+
+/*  The circuitProperties struct defines the content
+    of a circuit/module and the location of its inputs and outputs
 */
-struct circuitElementProperties
+struct circuitProperties
 {
-    string elementType;
+    /*Circuit input interface elements references*/
 
-    /*
-        Inputs & Outputs objects connected are stored
-        into two list<pair<string ObjectName, int inputID>>
-        
-        inputID specifies which I/O 'pin' number is used
-    */
-
-    map<string, int> inputElements;
-    map<string, int> outputElements; 
-};
-
-/*circuitElementCollection is a list of "elementName" paired to 
-its associated properties. Goal is to optimize element search during
-code analysis*/
-typedef map<string, circuitElementProperties> circuitElementCollection;
-
-/* describes a circuit element as a pair string 'name', circuitElementProperties */
-typedef pair<string, circuitElementProperties> circuitElement;
-
-
-/*  The circuit struct contains 
-    the "digraph" name and a list of elements
-    contained in it as well as their link to each other
-*/
-struct circuit
-{
-    /*Name of the circuit*/
-    string name;
+    /*Circuit output interface elements references*/
+    
+    
 
     /*Individual elements containted into the circuit*/
     circuitElementCollection elements;
 };
+
+typedef pair<circuitName, circuitProperties> circuit; 
 
 
 
@@ -122,17 +146,22 @@ class ObjectBuilder
             elementFeildInitializers.insert(pair<elementFeildInitializer, string>(f, val));
         }
 
+        int getTotalElementCount();
+
+        int getElementCountOfCircuit(circuitName n);
+
         void initialize();
 
         // passes lexedList address for memory optimization
-        list<circuit> buildCircuit(list<string>* lexedList);
+        map<circuitName, circuitProperties>* buildCircuit(list<string>* lexedList);
 
     
     private:
-        list<circuit> builtCircuits;
+        map<circuitName, circuitProperties> builtCircuits;
 
         //FSM related variables
         circuit currentCircuit;
+        circuitElement currentCircuitElement;
         circuitBuildState currentState;
         circuitBuildState nextState;
 
@@ -144,6 +173,7 @@ class ObjectBuilder
         queue<string> codeWordStack;
 
         bool verbose;
+        bool codeSectionCompleted;
 
         /* method iterates the FSM*/
         void iterateStateMachine(string s);
@@ -178,6 +208,8 @@ class ObjectBuilder
             if(verbose)
                 cout << "objectBuilder \033[1;32mINFO\033[0m > " << message << endl;
         }
+
+        void spitReportMessage();
 };
 
 
