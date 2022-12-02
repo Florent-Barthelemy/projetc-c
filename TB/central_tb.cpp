@@ -2,5 +2,5 @@
 
 int main()
 {
-    
+    gate_tb();
 }
