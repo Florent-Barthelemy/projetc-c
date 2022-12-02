@@ -2,7 +2,7 @@
 #include <iostream>
 
 using namespace std;
-int main()
+int TB_lexer()
 {
 	list<string> lexedList;
 	DELIM_MAP delims;
