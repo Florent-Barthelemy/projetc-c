@@ -17,8 +17,16 @@ enum DELIM_MODE : uint8_t
 	TOGGLE_STRING
 };
 
+namespace std {
+	struct lined_string
+	{
+		string cnt;
+		unsigned long line;
+	};
+}
+
 #define DELIM_MAP std::list<std::pair<std::string, DELIM_MODE>>
-#define LEXED_LIST std::list<std::string>
+#define LEXED_LIST std::list<std::lined_string>
 #define ADD_DELIM(var, tag, conf) var.push_back(std::pair<std::string, DELIM_MODE>(tag, conf));
 
 /**

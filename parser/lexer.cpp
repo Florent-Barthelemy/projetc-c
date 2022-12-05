@@ -2,6 +2,8 @@
 
 int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 {
+	unsigned long lineNb = 0;
+
 	if (!file.is_open())
 		return LEX_FILE_NOT_OPENED;
 
@@ -12,6 +14,9 @@ int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 	{
 		buf += iResult;
 
+		if(iResult == '\n')
+			lineNb++;
+
 		DELIM_MAP::iterator delimSearch;
 		for (delimSearch = delimiters.begin(); delimSearch != delimiters.end(); delimSearch++)
 			if (delimSearch->first.size() <= buf.size())
@@ -21,10 +26,10 @@ int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 		if (delimSearch != delimiters.end())
 		{
 			if ((buf.size() - delimSearch->first.size()) > 0)
-				lexListContainer.push_back(buf.substr(0, buf.size() - delimSearch->first.size()));
+				lexListContainer.push_back({buf.substr(0, buf.size() - delimSearch->first.size()), lineNb});
 
 			if (delimSearch->second == SAVE)
-				lexListContainer.push_back(delimSearch->first);
+				lexListContainer.push_back({delimSearch->first, lineNb});
 
 			buf = ""; //reset buffer
 
@@ -56,7 +61,7 @@ int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 		iResult = file.get();
 	}
 
-	lexListContainer.push_back(buf);
+	lexListContainer.push_back({buf, lineNb});
 
 	return LEX_SUCCESS;
 }

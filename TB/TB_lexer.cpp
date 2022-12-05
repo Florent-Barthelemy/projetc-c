@@ -1,10 +1,10 @@
-#include "lexer.h"
+#include "..\\parser\\lexer.h"
 #include <iostream>
 
 using namespace std;
 int TB_lexer()
 {
-	list<string> lexedList;
+	LEXED_LIST lexedList;
 	DELIM_MAP delims;
 
 	//to discard
@@ -25,23 +25,15 @@ int TB_lexer()
 
 	//test
 	cout << "************DOT_TB0.dot******************" << endl;
-	fstream tb0("DOT_TB0.dot", ios_base::in);
+	fstream tb0("..\\parser\\dot_test_file.dot", ios_base::in);
 
 	lex(tb0, delims, lexedList);
 
-	for (list<string>::iterator it = lexedList.begin(); it != lexedList.end(); it++)
+	for (list<lined_string>::iterator it = lexedList.begin(); it != lexedList.end(); it++)
 	{
-		cout << *it << endl;
+		cout << it->cnt << endl;
+		cout << "   @" << it->line << endl;
 	}
 
-	cout << "************DOT_TB1.dot******************" << endl;
-	lexedList.clear();
-	fstream tb1("DOT_TB1.dot", ios_base::in);
-
-	lex(tb1, delims, lexedList);
-
-	for (list<string>::iterator it = lexedList.begin(); it != lexedList.end(); it++)
-	{
-		cout << *it << endl;
-	}
+	return 0;
 }
