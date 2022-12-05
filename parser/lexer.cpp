@@ -2,7 +2,7 @@
 
 int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 {
-	unsigned long lineNb = 0;
+	unsigned long lineNb = 1;
 
 	if (!file.is_open())
 		return LEX_FILE_NOT_OPENED;
