@@ -1,4 +1,6 @@
-#pragma once
+#ifndef LOGIC_H_
+#define LOGIC_H_
+
 #include <ostream>
 
 #define ASSERT_LOGIC(a, b)			\
@@ -28,3 +30,5 @@ LOGICSTATE operator--(LOGICSTATE& o1, int i) = delete;
 
 //display operators
 std::ostream& operator<<(std::ostream& stream, const LOGICSTATE state);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef PRIMLIB_H_
+#define PRIMLIB_H_
+
 #include "../module.h"
 
 #define CREATE_PRIMGATE(name, inNames, outNames)                    \
@@ -12,3 +15,5 @@
 
 CREATE_PRIMGATE(AND, PRIMGATE_STD_IN2, PRIMGATE_STD_OUT);
 CREATE_PRIMGATE(OR, PRIMGATE_STD_IN2, PRIMGATE_STD_OUT);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef NAMED_OBJ_H_
+#define NAMED_OBJ_H_
+
 #include <string>
 
 class NAMEDOBJ
@@ -11,3 +14,5 @@ public:
 
     inline std::string getName() const { return this->name; }
 };
+
+#endif
