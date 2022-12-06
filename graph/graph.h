@@ -52,10 +52,12 @@ NODE<LOGICTYPE>::~NODE()
     for(std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator inIT = this->inputs.begin(); inIT != this->inputs.end(); ++inIT)
     {
         if(inIT->second != NULL) //is connected
-            for(std::list<NODE<LOGICTYPE>*>::iterator remIT = inIT->second->outputs.begin(); remIT != inIT->second->outputs.end(); ++remIT)
+            for(std::list<NODE<LOGICTYPE>*>::iterator remIT = inIT->second->outputs.begin(); remIT != inIT->second->outputs.end();)
             {
                 if(*remIT == this)
                     remIT = inIT->second->outputs.erase(remIT);
+                else
+                    ++remIT;
             }
     }
 
