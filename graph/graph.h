@@ -49,14 +49,29 @@ NODE<LOGICTYPE>::NODE(std::vector<std::string>& inputNames, std::vector<std::str
 template <typename LOGICTYPE>
 NODE<LOGICTYPE>::~NODE()
 {
-    for(std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator inIT = this->inputs.begin(); inIT != this->inputs.end(); inIT++)
+    for(std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator inIT = this->inputs.begin(); inIT != this->inputs.end(); ++inIT)
     {
-        for(std::list<NODE<LOGICTYPE>*>::iterator remIT = inIT->second->outputs.begin(); remIT != inIT->second->outputs.end(); remIT++)
+        if(inIT->second != NULL) //is connected
+            for(std::list<NODE<LOGICTYPE>*>::iterator remIT = inIT->second->outputs.begin(); remIT != inIT->second->outputs.end(); ++remIT)
+            {
+                if(*remIT == this)
+                    remIT = inIT->second->outputs.erase(remIT);
+            }
+    }
+
+    for(std::map<std::string, NODE_CONN<LOGICTYPE>>::iterator outIT = this->outputs.begin(); outIT != this->outputs.end(); ++outIT)
+    {
+        for(std::list<NODE<LOGICTYPE>*>::iterator nodeIT = outIT->second.outputs.begin(); nodeIT != outIT->second.outputs.end(); ++nodeIT)
         {
-            if(*remIT == this)
-                inIT->second->outputs.erase(remIT);
+            for(std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator mapIT = (*nodeIT)->inputs.begin(); mapIT != (*nodeIT)->inputs.end(); ++mapIT)
+            {
+                if(mapIT->second == &outIT->second)
+                    mapIT->second = NULL;
+            }
         }
     }
+
+    this->outputs.clear();
 }
 
 template <typename LOGICTYPE>

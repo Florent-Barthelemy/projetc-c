@@ -5,17 +5,19 @@ using namespace std;
 
 void gate_tb()
 {
-    AND adder("myAdder");
+    //NEEDS TO BE BEFORE GATE INSTANCIATION!
+    //NODE_CONN HERE ARE DESTROYED AFTER THE DESTRUCTION OF THE MODULES!
+    NODE_CONN<LOGICSTATE> testConn1 = {X, {}};
+    NODE_CONN<LOGICSTATE> testConn2 = {X, {}};
+
     AND adder2("add2");
     AND adder3("add3");
+    OR adder("myAdder");
 
     adder2.connIn("IN1", adder.getOutConn("OUT1"));
     adder2.connIn("IN2", adder.getOutConn("OUT1"));
     adder3.connIn("IN1", adder.getOutConn("OUT1"));
     adder3.connIn("IN2", adder.getOutConn("OUT1"));
-
-    NODE_CONN<LOGICSTATE> testConn1 = {X, {}};
-    NODE_CONN<LOGICSTATE> testConn2 = {X, {}};
 
     adder.connIn("IN1", &testConn1);
     adder.connIn("IN2", &testConn2);
