@@ -17,6 +17,10 @@ struct NODE_CONN
     std::list<NODE<LOGICTYPE>*> outputs;
 };
 
+/**
+Directed graph vertices/nodes/points.
+Edges/links/lines are connected via the "input" and "outputs". Their value is registered in a NODE_CONN.
+*/
 template <typename LOGICTYPE>
 class NODE
 {
@@ -26,23 +30,48 @@ protected:
 
 public:
     NODE() = delete;
+    NODE(NODE&) = delete;
+
+    /**
+    Node constructor.
+    \param inputNames: vector of input port names
+    \param outputNames: vector of output port names
+    */
     NODE(std::vector<std::string>& inputNames, std::vector<std::string>& outputNames);
     ~NODE();
 
+    /**
+    Connect input net to NODE_CONN.
+    \param portName: name of the port to connect.
+    \param conn: NODE_CONN to connect.
+    \throw std::exception when port does not exist.
+    */
     void connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn) throw(...);
 
+    /**
+    Gets input port pointer.
+    \param portName: name of the port to get.
+    \return NODE_CONN driving this net.
+    \throw std::exception when port does not exist.
+    */
     NODE_CONN<LOGICTYPE>* getInConn(std::string portName) throw(...);
 
+    /**
+    Gets output port pointer.
+    \param portName: name of the port to get.
+    \return NODE_CONN driving this net.
+    \throw std::exception when port does not exist.
+    */
     NODE_CONN<LOGICTYPE>* getOutConn(std::string portName) throw(...);
 };
 
 template <typename LOGICTYPE>
 NODE<LOGICTYPE>::NODE(std::vector<std::string>& inputNames, std::vector<std::string>& outputNames)
 {
-    for(auto inIT = inputNames.begin(); inIT != inputNames.end(); inIT++)
+    for(auto inIT = inputNames.begin(); inIT != inputNames.end(); inIT++) //creates input ports
         this->inputs.insert({*inIT, NULL});
 
-    for(auto outIT = outputNames.begin(); outIT != outputNames.end(); outIT++)
+    for(auto outIT = outputNames.begin(); outIT != outputNames.end(); outIT++) //creates output ports
         this->outputs.insert({*outIT, {}});
 }
 
@@ -51,10 +80,10 @@ NODE<LOGICTYPE>::~NODE()
 {
     for(std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator inIT = this->inputs.begin(); inIT != this->inputs.end(); ++inIT)
     {
-        if(inIT->second != NULL) //is connected
+        if(inIT->second != NULL) //if port is connected
             for(std::list<NODE<LOGICTYPE>*>::iterator remIT = inIT->second->outputs.begin(); remIT != inIT->second->outputs.end();)
             {
-                if(*remIT == this)
+                if(*remIT == this) //port is connected
                     remIT = inIT->second->outputs.erase(remIT);
                 else
                     ++remIT;
@@ -67,7 +96,7 @@ NODE<LOGICTYPE>::~NODE()
         {
             for(std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator mapIT = (*nodeIT)->inputs.begin(); mapIT != (*nodeIT)->inputs.end(); ++mapIT)
             {
-                if(mapIT->second == &outIT->second)
+                if(mapIT->second == &outIT->second) //disconnect all connected nodes
                     mapIT->second = NULL;
             }
         }

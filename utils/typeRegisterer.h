@@ -12,8 +12,28 @@ private:
     static std::map<ID, INIT_FNC> initialiserRegister;
 
 public:
-    static BASE_CLASS* createNewObject(ID identifier, INIT_PARAM) throw(...);
+    /**
+    Creates a new object registered in the table as identifier.
+    \param identifier: identifier of the object generator.
+    \param param: parameters to pass to the generator.
+    \return a pointer to the object created.
+    \throw std::exception when identifier has no matched generator.
+    */
+    static BASE_CLASS* createNewObject(ID identifier, INIT_PARAM param) throw(...);
+
+    /**
+    Registers new generator.
+    \param identifier: identifier of the generator.
+    \param fnc: generator linked to the identifier.
+    \return true if successfully registered.
+    */
     static bool registerType(ID identifier, INIT_FNC fnc);
+
+    /**
+    Unregisters generator.
+    \param identifier: identifier of the generator.
+    \return true if successfully unregistered.
+    */
     static bool unregisterType(ID identifier);
 };
 

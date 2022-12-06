@@ -9,6 +9,19 @@
 	else if (a == Z || b == Z)		\
 		return Z; 
 
+/**
+This enum represents a simulation state:
+ - H for logical 1
+ - L for logical 0
+ - X for unknown
+ - Z fpr high-Z
+
+Associated operators are also implemented:
+ '+': logical 'OR'
+ '*': logical 'AND'
+ '^': logical 'XOR'
+ '!': logical inverter
+*/
 enum LOGICSTATE
 {
 	H,
