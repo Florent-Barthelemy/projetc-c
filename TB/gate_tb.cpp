@@ -9,16 +9,16 @@ void gate_tb()
     AND adder2("add2");
     AND adder3("add3");
 
-    adder2.connIn("A", adder.getOutConn("S"));
-    adder2.connIn("B", adder.getOutConn("S"));
-    adder3.connIn("A", adder.getOutConn("S"));
-    adder3.connIn("B", adder.getOutConn("S"));
+    adder2.connIn("IN1", adder.getOutConn("OUT1"));
+    adder2.connIn("IN2", adder.getOutConn("OUT1"));
+    adder3.connIn("IN1", adder.getOutConn("OUT1"));
+    adder3.connIn("IN2", adder.getOutConn("OUT1"));
 
     NODE_CONN<LOGICSTATE> testConn1 = {X, {}};
     NODE_CONN<LOGICSTATE> testConn2 = {X, {}};
 
-    adder.connIn("A", &testConn1);
-    adder.connIn("B", &testConn2);
+    adder.connIn("IN1", &testConn1);
+    adder.connIn("IN2", &testConn2);
 
     testConn1.state = L;
     testConn2.state = L;
@@ -27,7 +27,7 @@ void gate_tb()
 
     cout << "|A|B||S1|S2|" << endl;
     cout << "|" << testConn1.state << "|" << testConn2.state << "||";
-    cout << adder2.getOutConn("S")->state << " |" << adder3.getOutConn("S")->state << " |";
+    cout << adder2.getOutConn("OUT1")->state << " |" << adder3.getOutConn("OUT1")->state << " |";
     cout << endl;
 
     testConn1.state = L;
@@ -36,7 +36,7 @@ void gate_tb()
     adder.updateGate();
 
     cout << "|" << testConn1.state << "|" << testConn2.state << "||";
-    cout << adder2.getOutConn("S")->state << " |" << adder3.getOutConn("S")->state << " |";
+    cout << adder2.getOutConn("OUT1")->state << " |" << adder3.getOutConn("OUT1")->state << " |";
     cout << endl;
 
     testConn1.state = H;
@@ -45,7 +45,7 @@ void gate_tb()
     adder.updateGate();
 
     cout << "|" << testConn1.state << "|" << testConn2.state << "||";
-    cout << adder2.getOutConn("S")->state << " |" << adder3.getOutConn("S")->state << " |";
+    cout << adder2.getOutConn("OUT1")->state << " |" << adder3.getOutConn("OUT1")->state << " |";
     cout << endl;
 
     testConn1.state = H;
@@ -54,6 +54,6 @@ void gate_tb()
     adder.updateGate();
 
     cout << "|" << testConn1.state << "|" << testConn2.state << "||";
-    cout << adder2.getOutConn("S")->state << " |" << adder3.getOutConn("S")->state << " |";
+    cout << adder2.getOutConn("OUT1")->state << " |" << adder3.getOutConn("OUT1")->state << " |";
     cout << endl;
 }

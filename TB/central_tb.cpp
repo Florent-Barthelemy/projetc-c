@@ -2,5 +2,7 @@
 
 int main()
 {
-    TB_lexer();
+    //TB_lexer();
+    //gate_tb();
+    initialiser_tb();
 }
