@@ -18,7 +18,8 @@ public:
     \param identifier: identifier of the object generator.
     \param param: parameters to pass to the generator.
     \return a pointer to the object created.
-    \throw std::exception when identifier has no matched generator.
+    \throw std::invalid_argument when identifier has no matched generator.
+    \throw std::domain_error when generator failed to create object (returned NULL).
     */
     static BASE_CLASS* createNewObject(ID identifier, INIT_PARAM param);
 
