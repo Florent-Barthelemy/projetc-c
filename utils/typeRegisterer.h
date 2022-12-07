@@ -19,7 +19,7 @@ public:
     \return a pointer to the object created.
     \throw std::exception when identifier has no matched generator.
     */
-    static BASE_CLASS* createNewObject(ID identifier, INIT_PARAM param) throw(...);
+    static BASE_CLASS* createNewObject(ID identifier, INIT_PARAM param);
 
     /**
     Registers new generator.
@@ -41,7 +41,7 @@ template<class BASE_CLASS, typename INIT_PARAM, typename ID>
 std::map<ID, BASE_CLASS* (*)(INIT_PARAM)> TYPE_REG<BASE_CLASS, INIT_PARAM, ID>::initialiserRegister;
 
 template<class BASE_CLASS, typename INIT_PARAM, typename ID>
-BASE_CLASS* TYPE_REG<BASE_CLASS, INIT_PARAM, ID>::createNewObject(ID identifier, INIT_PARAM param) throw(...)
+BASE_CLASS* TYPE_REG<BASE_CLASS, INIT_PARAM, ID>::createNewObject(ID identifier, INIT_PARAM param)
 {
     std::map<ID, INIT_FNC>::iterator objCreator = initialiserRegister.find(identifier);
 

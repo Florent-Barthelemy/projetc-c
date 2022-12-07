@@ -46,7 +46,7 @@ public:
     \param conn: NODE_CONN to connect.
     \throw std::exception when port does not exist.
     */
-    void connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn) throw(...);
+    void connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn);
 
     /**
     Gets input port pointer.
@@ -54,7 +54,7 @@ public:
     \return NODE_CONN driving this net.
     \throw std::exception when port does not exist.
     */
-    NODE_CONN<LOGICTYPE>* getInConn(std::string portName) throw(...);
+    NODE_CONN<LOGICTYPE>* getInConn(std::string portName);
 
     /**
     Gets output port pointer.
@@ -62,7 +62,7 @@ public:
     \return NODE_CONN driving this net.
     \throw std::exception when port does not exist.
     */
-    NODE_CONN<LOGICTYPE>* getOutConn(std::string portName) throw(...);
+    NODE_CONN<LOGICTYPE>* getOutConn(std::string portName);
 };
 
 template <typename LOGICTYPE>
@@ -106,7 +106,7 @@ NODE<LOGICTYPE>::~NODE()
 }
 
 template <typename LOGICTYPE>
-void NODE<LOGICTYPE>::connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn) throw(...)
+void NODE<LOGICTYPE>::connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn)
 {
     std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator connSearch = this->inputs.find(portName);
 
@@ -120,7 +120,7 @@ void NODE<LOGICTYPE>::connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn) t
 }
 
 template <typename LOGICTYPE>
-NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getInConn(std::string portName) throw(...)
+NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getInConn(std::string portName)
 {
     std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator connSearch = this->inputs.find(portName);
 
@@ -131,7 +131,7 @@ NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getInConn(std::string portName) throw(...
 }
 
 template <typename LOGICTYPE>
-NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getOutConn(std::string portName) throw(...)
+NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getOutConn(std::string portName)
 {
     std::map<std::string, NODE_CONN<LOGICTYPE>>::iterator connSearch = this->outputs.find(portName);
 
