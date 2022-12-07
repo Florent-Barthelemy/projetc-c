@@ -1,5 +1,5 @@
-#ifndef MODULE_H_
-#define MODULE_H_
+#ifndef SIM_NODE_H_
+#define SIM_NODE_H_
 
 #include "../graph/graph.h"
 #include "logic.h"

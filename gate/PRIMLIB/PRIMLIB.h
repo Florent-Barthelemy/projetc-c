@@ -1,7 +1,7 @@
 #ifndef PRIMLIB_H_
 #define PRIMLIB_H_
 
-#include "../module.h"
+#include "../sim_node.h"
 
 #define CREATE_PRIMGATE(name, inNames, outNames)                    \
     class name : public SIM_NODE {                                    \

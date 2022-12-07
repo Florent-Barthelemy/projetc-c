@@ -1,4 +1,4 @@
-#include "module.h"
+#include "sim_node.h"
 
 SIM_NODE::SIM_NODE(std::string name, std::vector<std::string> inputNames, std::vector<std::string> outputNames) :
     NODE(inputNames, outputNames), NAMEDOBJ(name)

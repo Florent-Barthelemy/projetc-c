@@ -1,4 +1,4 @@
-#include "../gate/module.h"
+#include "../gate/sim_node.h"
 #include "../gate/PRIMLIB/PRIMLIB.h"
 
 SIM_NODE* andCreator(INIT_PARAM params)
