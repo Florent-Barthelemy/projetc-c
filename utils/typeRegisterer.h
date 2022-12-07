@@ -3,6 +3,7 @@
 
 #include <map>
 #include <exception>
+#include <stdexcept>
 
 template<class BASE_CLASS, typename INIT_PARAM, typename ID>
 class TYPE_REG
@@ -46,12 +47,12 @@ BASE_CLASS* TYPE_REG<BASE_CLASS, INIT_PARAM, ID>::createNewObject(ID identifier,
     typename std::map<ID, INIT_FNC>::iterator objCreator = initialiserRegister.find(identifier);
 
     if(objCreator == initialiserRegister.end())
-        throw new std::exception("Type is not registered.");
+        throw std::invalid_argument("Type is not registered.");
 
     BASE_CLASS* newObj = objCreator->second(param);
 
     if(newObj == NULL)
-        throw new std::exception("Initialisor failed to create object.");
+        throw std::domain_error("Initialisor failed to create object.");
 
         return newObj;
 }

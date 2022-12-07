@@ -6,6 +6,7 @@
 #include <list>
 #include <exception>
 #include <vector>
+#include <stdexcept>
 
 template <typename LOGICTYPE>
 class NODE;
@@ -116,7 +117,7 @@ void NODE<LOGICTYPE>::connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn)
         conn->outputs.push_back(this);
     }
     else
-        throw new std::exception("Input port name does not exist.");
+        throw std::invalid_argument("Input port name does not exist.");
 }
 
 template <typename LOGICTYPE>
@@ -125,7 +126,7 @@ NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getInConn(std::string portName)
     typename std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator connSearch = this->inputs.find(portName);
 
     if(connSearch == this->inputs.end())
-        throw new std::exception("Inputs port name does not exist.");
+        throw std::invalid_argument("Inputs port name does not exist.");
     else
         return connSearch->second;
 }
@@ -136,7 +137,7 @@ NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getOutConn(std::string portName)
     typename std::map<std::string, NODE_CONN<LOGICTYPE>>::iterator connSearch = this->outputs.find(portName);
 
     if(connSearch == this->outputs.end())
-        throw new std::exception("Output port name does not exist.");
+        throw std::invalid_argument("Output port name does not exist.");
     else
         return &connSearch->second;
 }
