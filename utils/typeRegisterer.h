@@ -43,7 +43,7 @@ std::map<ID, BASE_CLASS* (*)(INIT_PARAM)> TYPE_REG<BASE_CLASS, INIT_PARAM, ID>::
 template<class BASE_CLASS, typename INIT_PARAM, typename ID>
 BASE_CLASS* TYPE_REG<BASE_CLASS, INIT_PARAM, ID>::createNewObject(ID identifier, INIT_PARAM param)
 {
-    std::map<ID, INIT_FNC>::iterator objCreator = initialiserRegister.find(identifier);
+    typename std::map<ID, INIT_FNC>::iterator objCreator = initialiserRegister.find(identifier);
 
     if(objCreator == initialiserRegister.end())
         throw new std::exception("Type is not registered.");

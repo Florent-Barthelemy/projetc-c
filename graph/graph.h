@@ -78,10 +78,10 @@ NODE<LOGICTYPE>::NODE(std::vector<std::string>& inputNames, std::vector<std::str
 template <typename LOGICTYPE>
 NODE<LOGICTYPE>::~NODE()
 {
-    for(std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator inIT = this->inputs.begin(); inIT != this->inputs.end(); ++inIT)
+    for(typename std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator inIT = this->inputs.begin(); inIT != this->inputs.end(); ++inIT)
     {
         if(inIT->second != NULL) //if port is connected
-            for(std::list<NODE<LOGICTYPE>*>::iterator remIT = inIT->second->outputs.begin(); remIT != inIT->second->outputs.end();)
+            for(typename std::list<NODE<LOGICTYPE>*>::iterator remIT = inIT->second->outputs.begin(); remIT != inIT->second->outputs.end();)
             {
                 if(*remIT == this) //port is connected
                     remIT = inIT->second->outputs.erase(remIT);
@@ -90,11 +90,11 @@ NODE<LOGICTYPE>::~NODE()
             }
     }
 
-    for(std::map<std::string, NODE_CONN<LOGICTYPE>>::iterator outIT = this->outputs.begin(); outIT != this->outputs.end(); ++outIT)
+    for(typename std::map<std::string, NODE_CONN<LOGICTYPE>>::iterator outIT = this->outputs.begin(); outIT != this->outputs.end(); ++outIT)
     {
-        for(std::list<NODE<LOGICTYPE>*>::iterator nodeIT = outIT->second.outputs.begin(); nodeIT != outIT->second.outputs.end(); ++nodeIT)
+        for(typename std::list<NODE<LOGICTYPE>*>::iterator nodeIT = outIT->second.outputs.begin(); nodeIT != outIT->second.outputs.end(); ++nodeIT)
         {
-            for(std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator mapIT = (*nodeIT)->inputs.begin(); mapIT != (*nodeIT)->inputs.end(); ++mapIT)
+            for(typename std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator mapIT = (*nodeIT)->inputs.begin(); mapIT != (*nodeIT)->inputs.end(); ++mapIT)
             {
                 if(mapIT->second == &outIT->second) //disconnect all connected nodes
                     mapIT->second = NULL;
@@ -108,7 +108,7 @@ NODE<LOGICTYPE>::~NODE()
 template <typename LOGICTYPE>
 void NODE<LOGICTYPE>::connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn)
 {
-    std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator connSearch = this->inputs.find(portName);
+    typename std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator connSearch = this->inputs.find(portName);
 
     if(connSearch != this->inputs.end())
     {
@@ -122,7 +122,7 @@ void NODE<LOGICTYPE>::connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn)
 template <typename LOGICTYPE>
 NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getInConn(std::string portName)
 {
-    std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator connSearch = this->inputs.find(portName);
+    typename std::map<std::string, NODE_CONN<LOGICTYPE>*>::iterator connSearch = this->inputs.find(portName);
 
     if(connSearch == this->inputs.end())
         throw new std::exception("Inputs port name does not exist.");
@@ -133,7 +133,7 @@ NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getInConn(std::string portName)
 template <typename LOGICTYPE>
 NODE_CONN<LOGICTYPE>* NODE<LOGICTYPE>::getOutConn(std::string portName)
 {
-    std::map<std::string, NODE_CONN<LOGICTYPE>>::iterator connSearch = this->outputs.find(portName);
+    typename std::map<std::string, NODE_CONN<LOGICTYPE>>::iterator connSearch = this->outputs.find(portName);
 
     if(connSearch == this->outputs.end())
         throw new std::exception("Output port name does not exist.");
