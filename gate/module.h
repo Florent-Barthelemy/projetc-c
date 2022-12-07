@@ -28,7 +28,7 @@ public:
     /**
     Updates the current state of this module and sends event to connected modules.
     */
-    void updateGate();
+    virtual void updateGate();
 };
 
 #endif
