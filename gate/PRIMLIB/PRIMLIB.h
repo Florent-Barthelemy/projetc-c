@@ -4,9 +4,9 @@
 #include "../module.h"
 
 #define CREATE_PRIMGATE(name, inNames, outNames)                    \
-    class name : public MODULE {                                    \
+    class name : public SIM_NODE {                                    \
         public:                                                     \
-            name(std::string n) : MODULE(n, inNames, outNames) {};  \
+            name(std::string n) : SIM_NODE(n, inNames, outNames) {};  \
             void updateState();                                     \
     };
 

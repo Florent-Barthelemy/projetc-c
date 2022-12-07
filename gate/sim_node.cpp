@@ -1,13 +1,13 @@
 #include "module.h"
 
-MODULE::MODULE(std::string name, std::vector<std::string> inputNames, std::vector<std::string> outputNames) :
+SIM_NODE::SIM_NODE(std::string name, std::vector<std::string> inputNames, std::vector<std::string> outputNames) :
     NODE(inputNames, outputNames), NAMEDOBJ(name)
 {
     for(auto setIT = this->outputs.begin(); setIT != this->outputs.end(); setIT++)
         setIT->second.state = X;
 }
 
-void MODULE::updateGate()
+void SIM_NODE::updateGate()
 {
     updateState();
 
@@ -15,7 +15,7 @@ void MODULE::updateGate()
     {
         for(std::list<NODE<LOGICSTATE>*>::iterator connOutputs = myOutputs->second.outputs.begin(); connOutputs != myOutputs->second.outputs.end(); connOutputs++)
         {
-            static_cast<MODULE*>(*connOutputs)->updateGate();
+            static_cast<SIM_NODE*>(*connOutputs)->updateGate();
         }
     }   
 }

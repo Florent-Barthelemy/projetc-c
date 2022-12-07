@@ -15,10 +15,13 @@ struct INIT_PARAM
     
 };
 
-class MODULE : public NODE<LOGICSTATE>, public NAMEDOBJ, public TYPE_REG<MODULE, INIT_PARAM, std::string>
+class SIM_NODE : public NODE<LOGICSTATE>, public NAMEDOBJ, public TYPE_REG<SIM_NODE, INIT_PARAM, std::string>
 {
+private:
+    std::map<std::string, LOGICSTATE> prevState;
+
 public:
-    MODULE(std::string name, std::vector<std::string> inputNames, std::vector<std::string> outputNames);
+    SIM_NODE(std::string name, std::vector<std::string> inputNames, std::vector<std::string> outputNames);
 
     /**
     Updates the current state of modules ports.

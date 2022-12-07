@@ -1,14 +1,14 @@
 #include "../gate/module.h"
 #include "../gate/PRIMLIB/PRIMLIB.h"
 
-MODULE* andCreator(INIT_PARAM params)
+SIM_NODE* andCreator(INIT_PARAM params)
 {
     return new AND("test");
 }
 
 void initialiser_tb()
 {
-    MODULE::registerType("AND", andCreator);
+    SIM_NODE::registerType("AND", andCreator);
 
-    MODULE* and1 = MODULE::createNewObject("AND", {});
+    SIM_NODE* and1 = SIM_NODE::createNewObject("AND", {});
 }
