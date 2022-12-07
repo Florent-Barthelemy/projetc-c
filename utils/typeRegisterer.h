@@ -60,7 +60,7 @@ BASE_CLASS* TYPE_REG<BASE_CLASS, INIT_PARAM, ID>::createNewObject(ID identifier,
 template<class BASE_CLASS, typename INIT_PARAM, typename ID>
 bool TYPE_REG<BASE_CLASS, INIT_PARAM, ID>::registerType(ID identifier, INIT_FNC fnc)
 {
-    std::pair<std::map<ID, INIT_FNC>::iterator, bool> iResult = initialiserRegister.insert({identifier, fnc});
+    std::pair<typename std::map<ID, INIT_FNC>::iterator, bool> iResult = initialiserRegister.insert({identifier, fnc});
     return iResult.second;
 }
 
