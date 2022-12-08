@@ -36,6 +36,7 @@ SIM_NODE* orCreator(INIT_PARAM params);
 SIM_NODE* norCreator(INIT_PARAM params);
 SIM_NODE* xorCreator(INIT_PARAM params);
 SIM_NODE* nxorCreator(INIT_PARAM params);
+SIM_NODE* buffCreator(INIT_PARAM params);
 
 //memories
 #define PRIMGATE_FF_IN {"D", "Clk"}

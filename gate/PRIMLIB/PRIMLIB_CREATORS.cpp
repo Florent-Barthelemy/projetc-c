@@ -34,3 +34,8 @@ SIM_NODE* nxorCreator(INIT_PARAM params)
 {
     return new NXOR(params.nodeName);
 }
+
+SIM_NODE* buffCreator(INIT_PARAM params)
+{
+    return new BUFF(params.nodeName);
+}
