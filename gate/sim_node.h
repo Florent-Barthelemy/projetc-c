@@ -4,6 +4,7 @@
 #include "../graph/graph.h"
 #include "logic.h"
 #include <vector>
+#include <string>
 #include "../utils/namedObj.h"
 #include "../utils/typeRegisterer.h"
 
@@ -12,6 +13,7 @@ Params sent to the modules contructors
 */
 struct INIT_PARAM
 {
+    std::string nodeName;
     
 };
 

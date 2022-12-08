@@ -8,6 +8,7 @@
 #include <queue>  //for codeWord memory
 #include <utility>
 #include <iostream>
+#include "lexer.h"
 
 
 using namespace std;
@@ -108,8 +109,6 @@ enum elementFeildInitializer
     LABEL,
 };
 
-
-
 /*  The circuitProperties struct defines the content
     of a circuit/module and the location of its inputs and outputs
 */
@@ -128,6 +127,8 @@ struct circuitProperties
 typedef pair<circuitName, circuitProperties> circuit; 
 
 
+//useful to avoid long definitions
+typedef map<circuitName, circuitProperties> objectBuilderOutput;
 
 class ObjectBuilder
 {
@@ -153,7 +154,7 @@ class ObjectBuilder
         void initialize();
 
         // passes lexedList address for memory optimization
-        map<circuitName, circuitProperties>* buildCircuit(list<string>* lexedList);
+        map<circuitName, circuitProperties> buildCircuit(LEXED_LIST* lexedList);
 
     
     private:
@@ -176,7 +177,7 @@ class ObjectBuilder
         bool codeSectionCompleted;
 
         /* method iterates the FSM*/
-        void iterateStateMachine(string s);
+        void iterateStateMachine(LEXED_LIST::iterator s);
 
         /*Check if a word "string" is registered as a token or feild initializer*/
         bool isWordReserved(string);
@@ -184,9 +185,9 @@ class ObjectBuilder
         bool isAnElementFeildInitializer(string s);
 
         /* user text*/
-        void spitErrorAndExit(string message, int exitCode)
+        void spitErrorAndExit(string message,unsigned long line, int exitCode)
         {
-            cout << "ObjectBuilder \033[1;31mERROR\033[0m > " << message << endl;
+            cout << "ObjectBuilder \033[1;31mERROR\033[0m @line " << line << " > " << message << endl;
             //terminate the program
             cout << "Exitting...\n";
             exit(exitCode);

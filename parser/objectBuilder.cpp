@@ -9,28 +9,26 @@ void ObjectBuilder::initialize()
      nextState = circuitBuildState::INIT;
 }
 
-
-
 /* streams the lexedList string into the FSM */
-map<circuitName, circuitProperties>* ObjectBuilder::buildCircuit(list<string>* lexedList)
+map<circuitName, circuitProperties> ObjectBuilder::buildCircuit(LEXED_LIST* lexedList)
 {
     //initializing the state machine
     initialize();
     
     codeSectionCompleted = true;
 
-    for (list<string>::iterator it = lexedList->begin(); it != lexedList->end(); it++)
+    for (LEXED_LIST::iterator it = lexedList->begin(); it != lexedList->end(); it++)
 	{
-        iterateStateMachine(*it); //iterating FSM with a new code element
+        iterateStateMachine(it); //iterating FSM with a new code element
         
 	}
 
     if(!codeSectionCompleted)
-        spitErrorAndExit("Code stops unexpectedly, (missing quotes?)", -1);
+        spitErrorAndExit("Code stops unexpectedly, (missing quotes or end of block?)",0, -1);
     
     spitReportMessage();
         
-    return &builtCircuits;
+    return builtCircuits;
 }
 
 void ObjectBuilder::spitReportMessage()
@@ -61,11 +59,13 @@ int ObjectBuilder::getElementCountOfCircuit(circuitName n)
     return builtCircuits.at(n).elements.size();
 }
 
-
-void ObjectBuilder::iterateStateMachine(string codeWord)
+void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
 {
     //cout << "FSM codeWord : '" << codeWord << "'\n";
 
+    string codeWord = it->cnt;
+    unsigned long currentLine = it->line;
+    
     switch(currentState)
     {
 
@@ -74,7 +74,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
                 nextState = circuitBuildState::CREATE_NEW_CIRCUIT;
             else
                 spitErrorAndExit("Bad syntax, expected ' " + tokens.at(DIGRAPH)+ " ' got ' "
-                                + codeWord + " ' instead.", -1);
+                                + codeWord + " ' instead.",currentLine, -1);
         break;
         
         case circuitBuildState::CREATE_NEW_CIRCUIT:
@@ -85,7 +85,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
             codeSectionCompleted = false;
 
             if(isWordReserved(codeWord))
-                spitErrorAndExit("digraph name " + codeWord + " is either a token or reserved.", -1);
+                spitErrorAndExit("digraph name " + codeWord + " is either a token or reserved.",currentLine, -1);
                 //program stops, syntax error
             else
             {
@@ -102,7 +102,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
 
         case circuitBuildState::DESCRIPTION_BEGIN :
             if(codeWord != tokens.at(GRAPH_BLOCK_BEGIN))
-                spitErrorAndExit("' " + codeWord + " ' Invalid digraph block initializer.", -1);
+                spitErrorAndExit("' " + codeWord + " ' Invalid digraph block initializer.",currentLine, -1);
             else
                 spitVerboseMessage("Starting '" + currentCircuit.first + "' code analysis");
                 nextState = circuitBuildState::READ_NEW_CIRCUIT_HDL_LINE_FIRST;
@@ -121,7 +121,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
             }
             else if(isWordReserved(codeWord))
                 //new line starts by a reserved word
-                spitErrorAndExit("Element name '" + codeWord + "' is either a token or reserved.", -1);
+                spitErrorAndExit("Element name '" + codeWord + "' is either a token or reserved.",currentLine, -1);
             else
             {
                 codeWordStack.push(codeWord);
@@ -149,7 +149,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
             }
 
             else //if neither, it is a bad syntax
-                spitErrorAndExit("Invalid properties feild token '" + codeWord + "' after '" + codeWordStack.front() + "' element.", -1);
+                spitErrorAndExit("Invalid properties feild token '" + codeWord + "' after '" + codeWordStack.front() + "' element.",currentLine, -1);
 
             break;
         
@@ -169,12 +169,12 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
             if(rightOpDoNotEsist)
                //Right operand does not exist
                spitErrorAndExit("LinkageError : can't link object '" + codeWord
-                              + "' with object '" + codeWordStack.front()  + "', as '" + codeWord + "' is not declared.", -1);
+                              + "' with object '" + codeWordStack.front()  + "', as '" + codeWord + "' is not declared.",currentLine, -1);
 
             else if(leftOpDoNotEsist)
                //Left operand does not exist
                spitErrorAndExit("LinkageError : can't link object '" + codeWordStack.front()
-                              + "' with object '" +  codeWord + "', as '" + codeWordStack.front() + "' is not declared.", -1);
+                              + "' with object '" +  codeWord + "', as '" + codeWordStack.front() + "' is not declared.",currentLine, -1);
 
             codeWordStack.push(codeWord);
 
@@ -190,7 +190,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
         case circuitBuildState::INPUT_PORT_SPECIFIER_BEGIN :
             if(codeWord != tokens.at(INPUT_PORT_SPECIFIER_START))
                 spitErrorAndExit("LinkageError : Missing port specifier after '" + codeWordStack.back() + "', got '" 
-                               + codeWord + "' instead.", -1);
+                               + codeWord + "' instead.",currentLine, -1);
             else
                 nextState = circuitBuildState::LINK_ELEMENTS;
         break;
@@ -208,7 +208,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
 
             //if the port name is reserved, error
             if(isWordReserved(codeWord))
-                spitErrorAndExit("'" + leftOperand +   "' cannot have a port name which is a token or a reserved name, got '" + _portName + "'.", -1);
+                spitErrorAndExit("'" + leftOperand +   "' cannot have a port name which is a token or a reserved name, got '" + _portName + "'.",currentLine, -1);
 
             spitVerboseMessage("LINKAGE :: '" + leftOperand +   "' output connects to port '" + _portName + "' of '" + rightOperand + "'");
 
@@ -223,10 +223,14 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
             //add rightElement link info (input info)
             rightElement->second.inputElements.insert(pair<connectedElementName, portName>(leftElement->first, _portName));
             
+            map<connectedElementName, portName>::iterator elt = rightElement->second.inputElements.find(leftOperand);
+
             /*
-            
+
                 could check double definitions (two inputs connected together)
                 if it is not done on a top level.
+
+                Exception handeled in linkedModuleBuidler.cpp
             
             
             */
@@ -238,7 +242,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
         case circuitBuildState::INPUT_PORT_SPECIFIER_END :
             if(codeWord != tokens.at(INPUT_PORT_SPECIFIER_END))
                 spitErrorAndExit("Invalid port specifier end token, have'" + codeWord 
-                               + "' expected '" + tokens.at(INPUT_PORT_SPECIFIER_END) + "'.", -1);
+                               + "' expected '" + tokens.at(INPUT_PORT_SPECIFIER_END) + "'.",currentLine, -1);
             else
                 nextState = circuitBuildState::READ_NEW_CIRCUIT_HDL_LINE_FIRST;
         break;
@@ -247,7 +251,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
         case circuitBuildState::LINE_OF_CODE_END :
             if(codeWord != tokens.at(END_LINE_OF_CODE))
                 spitErrorAndExit("Missing '"+ tokens.at(END_LINE_OF_CODE) 
-                               + "' got unexpected token '" + codeWord + "' instead.", -1);
+                               + "' got unexpected token '" + codeWord + "' instead.",currentLine, -1);
             else
                 nextState = circuitBuildState::READ_NEW_CIRCUIT_HDL_LINE_FIRST;
         break;
@@ -260,7 +264,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
                 nextState = circuitBuildState::FEILD_INITIALIZER_END;
             
             else if(!isAnElementFeildInitializer(codeWord))
-                spitErrorAndExit("Invalid initializer : '" + codeWord + "' is not a valid property", -1);
+                spitErrorAndExit("Invalid initializer : '" + codeWord + "' is not a valid property",currentLine, -1);
             
             else
             {
@@ -277,7 +281,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
         case circuitBuildState::FEILD_INITIALIZER_ASSIGN :
                 if(codeWord != tokens.at(EQUAL_SIGN))
                     spitErrorAndExit("Missing assign symbol after initializer ' " + codeWordStack.front() + " ', expected ' " 
-                                    + tokens.at(EQUAL_SIGN) + "' instead.", -1);
+                                    + tokens.at(EQUAL_SIGN) + "' instead.",currentLine, -1);
                 else
                 {
                     //find what feild to init, the initializer name
@@ -299,7 +303,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
         case circuitBuildState::SET_ELEMENT_LABEL : 
             if(isWordReserved(codeWord))
                 spitErrorAndExit("Invalid [" + elementFeildInitializers.at(LABEL) 
-                               + "] property value ' " + codeWord + " '", -1);
+                               + "] property value ' " + codeWord + " '",currentLine, -1);
             else
             {
                 //if the property has an unreserved name, assign 'type' property
@@ -313,7 +317,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
         case circuitBuildState::FEILD_INITIALIZER_END:
             if(codeWord != tokens.at(END_LINE_OF_CODE))
                 spitErrorAndExit("Missing '"+ tokens.at(END_LINE_OF_CODE) 
-                               + "' got unexpected token '" + codeWord + "' instead.", -1);
+                               + "' got unexpected token '" + codeWord + "' instead.",currentLine, -1);
             else
             {
                 //new circuit element is a well constructed object, 
@@ -324,7 +328,7 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
                     //If the elements already exists
                     //elt.first->first corresponds to the currently existing element name
                     spitErrorAndExit("Double definition of object '" + elt.first->first 
-                                   + "' in circuit '" + currentCircuit.first + "', object is already defined with type ' " + elt.first->second.elementType + " '.", -1);
+                                   + "' in circuit '" + currentCircuit.first + "', object is already defined with type ' " + elt.first->second.elementType + " '.",currentLine, -1);
                 
                 else
                     //if the element is a new element, proceed with next line.
@@ -339,14 +343,14 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
             codeSectionCompleted = true;
 
             if(elt.second == false)
-                spitErrorAndExit("Double definition of circuit ' " + elt.first->first + "'.", -1);
+                spitErrorAndExit("Double definition of circuit ' " + elt.first->first + "'.",currentLine, -1);
             
             else if(codeWord == tokens.at(DIGRAPH))
                 nextState = circuitBuildState::CREATE_NEW_CIRCUIT;
 
             //the if(codeWord != "") is a lexer 'issue' workaround
             else if(codeWord != "")
-                spitErrorAndExit("Unexpected token '" + codeWord + "' after end of block.", -1);
+                spitErrorAndExit("Unexpected token '" + codeWord + "' after end of block.",currentLine, -1);
             
         break;
 
@@ -355,7 +359,6 @@ void ObjectBuilder::iterateStateMachine(string codeWord)
      currentState = nextState;
 
 }
-
 
 //could switch map<token, string> to map<token, string>* 
 bool ObjectBuilder::isWordReserved(string s)
