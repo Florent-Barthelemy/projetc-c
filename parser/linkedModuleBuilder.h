@@ -3,6 +3,7 @@
 
 #include "../gate/PRIMLIB/PRIMLIB.h"
 #include "../gate/sim_node.h"
+#include "module.h"
 #include "objectBuilder.h"
 
 
@@ -20,7 +21,7 @@ class LinkedModuleBuilder
     public:
         LinkedModuleBuilder(LinkedModuleBuilderConfig conf) : isVerbose(conf.isVerbose) {}
 
-        map<linkedModuleName, SIM_NODE*> buildLinkedModule(objectBuilderOutput* objBuilderOutput);
+        Module* buildLinkedModule(objectBuilderOutput* objBuilderOutput);
 
     private:
         bool isVerbose;

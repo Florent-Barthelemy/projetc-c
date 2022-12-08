@@ -4,5 +4,5 @@ int main()
 {
     //TB_lexer();
     //gate_tb();
-    initialiser_tb();
+    parser_tb();
 }
