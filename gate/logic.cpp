@@ -3,20 +3,20 @@
 //logic operators
 LOGICSTATE operator+(LOGICSTATE o1, LOGICSTATE o2)
 {
-	ASSERT_LOGIC(o1, o2);
-
 	if (o1 == H || o2 == H)
 		return H;
+
+	ASSERT_LOGIC(o1, o2);
 
 	return L;
 }
 
 LOGICSTATE operator*(LOGICSTATE o1, LOGICSTATE o2)
 {
-	ASSERT_LOGIC(o1, o2);
-
 	if (o1 == L || o2 == L)
 		return L;
+
+	ASSERT_LOGIC(o1, o2);
 
 	return H;
 }

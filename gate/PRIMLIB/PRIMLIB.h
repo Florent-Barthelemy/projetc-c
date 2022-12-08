@@ -16,6 +16,7 @@
 
 //1 input gates
 CREATE_PRIMGATE(INV, PRIMGATE_STD_IN1, PRIMGATE_STD_OUT);
+CREATE_PRIMGATE(BUFF, PRIMGATE_STD_IN1, PRIMGATE_STD_OUT);
 
 #define PRIMGATE_STD_IN2 {"IN1", "IN2"}
 
@@ -27,14 +28,27 @@ CREATE_PRIMGATE(NOR, PRIMGATE_STD_IN2, PRIMGATE_STD_OUT);
 CREATE_PRIMGATE(XOR, PRIMGATE_STD_IN2, PRIMGATE_STD_OUT);
 CREATE_PRIMGATE(NXOR, PRIMGATE_STD_IN2, PRIMGATE_STD_OUT);
 
+//memories
+#define PRIMGATE_FF_IN {"D", "Clk"}
+#define PRIMGATE_FF_OUT {"Q"}
 
-SIM_NODE* invCreator(INIT_PARAM params);
-SIM_NODE* andCreator(INIT_PARAM params);
-SIM_NODE* nandCreator(INIT_PARAM params);
-SIM_NODE* orCreator(INIT_PARAM params);
-SIM_NODE* norCreator(INIT_PARAM params);
-SIM_NODE* xorCreator(INIT_PARAM params);
-SIM_NODE* nxorCreator(INIT_PARAM params);
+class DFF : public SIM_NODE {
+    private:
+        LOGICSTATE currState = X;
+        LOGICSTATE prevClkState = L;
 
+    public:
+        DFF(std::string n) : SIM_NODE(n, PRIMGATE_FF_IN, PRIMGATE_FF_OUT) {};
+        void updateState();
+};
+
+class DLATCH : public SIM_NODE {
+    private:
+        LOGICSTATE currState = X;
+
+    public:
+        DLATCH(std::string n) : SIM_NODE(n, PRIMGATE_FF_IN, PRIMGATE_FF_OUT) {};
+        void updateState();
+};
 
 #endif

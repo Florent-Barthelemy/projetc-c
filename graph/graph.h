@@ -39,13 +39,14 @@ public:
     \param outputNames: vector of output port names
     */
     NODE(std::vector<std::string>& inputNames, std::vector<std::string>& outputNames);
+    
     ~NODE();
 
     /**
     Connect input net to NODE_CONN.
     \param portName: name of the port to connect.
     \param conn: NODE_CONN to connect.
-    \throw std::exception when port does not exist.
+    \throw std::invalid_argument when port does not exist.
     */
     void connIn(std::string portName, NODE_CONN<LOGICTYPE>* conn);
 
@@ -53,7 +54,7 @@ public:
     Gets input port pointer.
     \param portName: name of the port to get.
     \return NODE_CONN driving this net.
-    \throw std::exception when port does not exist.
+    \throw std::invalid_argument when port does not exist.
     */
     NODE_CONN<LOGICTYPE>* getInConn(std::string portName);
 
@@ -61,7 +62,7 @@ public:
     Gets output port pointer.
     \param portName: name of the port to get.
     \return NODE_CONN driving this net.
-    \throw std::exception when port does not exist.
+    \throw std::invalid_argument when port does not exist.
     */
     NODE_CONN<LOGICTYPE>* getOutConn(std::string portName);
 };

@@ -20,9 +20,20 @@ struct INIT_PARAM
 class SIM_NODE : public NODE<LOGICSTATE>, public NAMEDOBJ, public TYPE_REG<SIM_NODE, INIT_PARAM, std::string>
 {
 private:
-    std::map<std::string, LOGICSTATE> prevState;
+    std::map<std::string, LOGICSTATE> prevOutStates;
+    short deltaCycle;
+    static unsigned short maxDeltaCycle;
+
+    void memStates();
+    bool isSameState();
 
 public:
+    /**
+    SIM_NODE constructor.
+    \param name: name of the object.
+    \param inputNames: names of the inputs ports to create.
+    \param outputNames: names of the output ports to create.
+    */
     SIM_NODE(std::string name, std::vector<std::string> inputNames, std::vector<std::string> outputNames);
 
     /**
@@ -32,8 +43,15 @@ public:
 
     /**
     Updates the current state of this module and sends event to connected modules.
+    \throw std::overflow_error when delta cycle limit is reached.
     */
-    virtual void updateGate();
+    void updateGate();
+
+    /**
+    Sets the max delta cycle allowed for each SIM_NODE.
+    \param max: max delta cycle to set.
+    */
+    static inline void setMaxDelta(unsigned short max) { SIM_NODE::maxDeltaCycle = max; }
 };
 
 #endif
