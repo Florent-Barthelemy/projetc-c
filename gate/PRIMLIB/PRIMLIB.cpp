@@ -1,5 +1,7 @@
 #include "PRIMLIB.h"
 
+//combinatorial 2i/1s gates
+
 void INV::updateState()
 {
     getOutConn("OUT1")->state = !getInConn("IN1")->state;
@@ -33,4 +35,24 @@ void XOR::updateState()
 void NXOR::updateState()
 {
     getOutConn("OUT1")->state = !(getInConn("IN1")->state ^ getInConn("IN2")->state);
+}
+
+//1 bit memories
+
+void DFF::updateState()
+{
+    if(getInConn("Clk")->state == H && this->prevClkState == L)
+        this->currState = getInConn("D")->state;
+
+    this->prevClkState = getInConn("Clk")->state;
+
+    getOutConn("Q")->state = this->currState;
+}
+
+void DLATCH::updateState()
+{
+    if(getInConn("Clk")->state == H )
+        this->currState = getInConn("D")->state;
+        
+    getOutConn("Q")->state = this->currState;
 }

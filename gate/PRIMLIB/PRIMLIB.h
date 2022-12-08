@@ -27,4 +27,27 @@ CREATE_PRIMGATE(NOR, PRIMGATE_STD_IN2, PRIMGATE_STD_OUT);
 CREATE_PRIMGATE(XOR, PRIMGATE_STD_IN2, PRIMGATE_STD_OUT);
 CREATE_PRIMGATE(NXOR, PRIMGATE_STD_IN2, PRIMGATE_STD_OUT);
 
+//memories
+#define PRIMGATE_FF_IN {"D", "Clk"}
+#define PRIMGATE_FF_OUT {"Q"}
+
+class DFF : public SIM_NODE {
+    private:
+        LOGICSTATE currState = X;
+        LOGICSTATE prevClkState = L;
+
+    public:
+        DFF(std::string n) : SIM_NODE(n, PRIMGATE_FF_IN, PRIMGATE_FF_OUT) {};
+        void updateState();
+};
+
+class DLATCH : public SIM_NODE {
+    private:
+        LOGICSTATE currState = X;
+
+    public:
+        DLATCH(std::string n) : SIM_NODE(n, PRIMGATE_FF_IN, PRIMGATE_FF_OUT) {};
+        void updateState();
+};
+
 #endif

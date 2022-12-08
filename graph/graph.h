@@ -39,6 +39,7 @@ public:
     \param outputNames: vector of output port names
     */
     NODE(std::vector<std::string>& inputNames, std::vector<std::string>& outputNames);
+    
     ~NODE();
 
     /**
