@@ -1,11 +1,18 @@
 #include "PRIMLIB.h"
 
-//combinatorial 2i/1s gates
+//combinatorial 1i/1s gates
+
+void BUFF::updateState()
+{
+    getOutConn("OUT1")->state = getInConn("IN1")->state;
+}
 
 void INV::updateState()
 {
     getOutConn("OUT1")->state = !getInConn("IN1")->state;
 }
+
+//combinatorial 2i/1s gates
 
 void AND::updateState()
 {
