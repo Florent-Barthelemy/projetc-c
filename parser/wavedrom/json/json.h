@@ -3,12 +3,13 @@
 
 #include <string>
 #include <vector>
+#include <list>
 #include <map>
 #include "jsoncontainer.h"
 #include <exception>
 #include <stdexcept>
 
-typedef std::vector<std::string> JSONPATH;
+typedef std::list<std::string> JSONPATH;
 
 class JSONFIELD;
 class VALUE_FIELD;

@@ -61,7 +61,8 @@ int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 		iResult = file.get();
 	}
 
-	lexListContainer.push_back({buf, lineNb});
+	if(buf.size())
+		lexListContainer.push_back({buf, lineNb});
 
 	return LEX_SUCCESS;
 }

@@ -56,12 +56,12 @@ void ARRAY_FIELD::updateField(JSONPATH path, std::string val)
     if(path.size() <= 0)
         throw std::domain_error("Domain is not a value.");
 
-    long index = stringToInt(path.back());
+    long index = stringToInt(path.front());
 
     if(index > fields.size())
         throw std::out_of_range("JSON out of range access issued.");
 
-    path.pop_back();
+    path.pop_front();
 
     fields[index]->updateField(path, val);
 }
@@ -71,12 +71,12 @@ JSONPARSER* ARRAY_FIELD::getField(JSONPATH path)
     if(path.size() <= 0)
         throw std::domain_error("Domain is not a value.");
 
-    long index = stringToInt(path.back());
+    long index = stringToInt(path.front());
 
     if(index > fields.size())
         throw std::out_of_range("JSON out of range access issued.");
 
-    path.pop_back();
+    path.pop_front();
 
     return fields[index]->getField(path);
 }
@@ -99,12 +99,12 @@ void STRUCT_FIELD::updateField(JSONPATH path, std::string val)
     if(path.size() <= 0)
         throw std::domain_error("Domain is not a value.");
 
-    std::map<std::string, JSONFIELD*>::iterator fieldFinder = fields.find(path.back());
+    std::map<std::string, JSONFIELD*>::iterator fieldFinder = fields.find(path.front());
 
     if(fieldFinder == fields.end())
         throw std::invalid_argument("Field not found.");
 
-    path.pop_back();
+    path.pop_front();
 
     fieldFinder->second->updateField(path, val);
 }
@@ -114,12 +114,12 @@ JSONPARSER* STRUCT_FIELD::getField(JSONPATH path)
     if(path.size() <= 0)
         throw std::domain_error("Domain is not a value.");
 
-    std::map<std::string, JSONFIELD*>::iterator fieldFinder = fields.find(path.back());
+    std::map<std::string, JSONFIELD*>::iterator fieldFinder = fields.find(path.front());
 
     if(fieldFinder == fields.end())
         throw std::invalid_argument("Field not found.");
 
-    path.pop_back();
+    path.pop_front();
 
     return fieldFinder->second->getField(path);
 }
@@ -137,8 +137,8 @@ void UNSIZED_ARRAY_FIELD::updateField(JSONPATH path, std::string val)
     if(path.size() <= 0)
         throw std::domain_error("Domain is not a value.");
 
-    long index = stringToInt(path.back());
-    path.pop_back();
+    long index = stringToInt(path.front());
+    path.pop_front();
 
     if(index >= fields.size())
         if(index == fields.size())
@@ -157,12 +157,12 @@ JSONPARSER* UNSIZED_ARRAY_FIELD::getField(JSONPATH path)
     if(path.size() <= 0)
         throw std::domain_error("Domain is not a value.");
 
-    long index = stringToInt(path.back());
+    long index = stringToInt(path.front());
 
     if(index > fields.size())
         throw std::out_of_range("JSON out of range access issued.");
 
-    path.pop_back();
+    path.pop_front();
 
     return fields[index]->getField(path);
 }

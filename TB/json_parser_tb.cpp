@@ -1,33 +1,29 @@
-#include "../parser/wavedrom/json/json.h"
+#include "../parser/wavedrom/json/jsonparsing.h"
 #include <iostream>
 
 using namespace std;
+
+JSONFIELD* waveGenerator()
+{
+    return new STRUCT_FIELD({
+        { "name", new VALUE_FIELD(new JSONCONTAINER<std::string>("")) },
+        { "wave", new VALUE_FIELD(new JSONCONTAINER<std::string>("")) }
+    });
+}
 
 void json_parser_tb()
 {
     try
     {
-        STRUCT_FIELD json2 = {
-            { "signal", new ARRAY_FIELD(
-                {
-                    new VALUE_FIELD(new JSONCONTAINER<int>(0)),
-                    new VALUE_FIELD(new JSONCONTAINER<int>(2)),
-                    new VALUE_FIELD(new JSONCONTAINER<int>(4))
-                }
-            )},
-            { "time", new VALUE_FIELD(new JSONCONTAINER<std::string>("1ns")) },
-            { "buff", new UNSIZED_ARRAY_FIELD(fieldGenerator<int, 0>) }
-        };
+        JSON json = {{
+            "signal", new UNSIZED_ARRAY_FIELD(waveGenerator)
+        }};
 
-        cout << json2.getField({"0", "signal"})->toString() << endl;
-        cout << json2.getField({"1", "signal"})->toString() << endl;
-        cout << json2.getField({"2", "signal"})->toString() << endl;
+        fstream testFile("files\\json_test.json", ios_base::in);
 
-        cout << json2.getField({"time"})->toString() << endl;
+        parseJSON(testFile, json);
 
-        json2.updateField({"0", "buff"}, "1000");
-        cout << json2.getField({"0", "buff"})->toString() << endl;
-
+        
     }
     catch(const std::exception& e)
     {
