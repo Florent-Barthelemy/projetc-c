@@ -9,6 +9,7 @@
 #include <utility>
 #include <iostream>
 #include "lexer.h"
+#include "../utils/systemMessages.h"
 
 
 using namespace std;
@@ -137,7 +138,7 @@ class ObjectBuilder
     
     */
     public:
-        ObjectBuilder(bool isVerbose) : verbose(isVerbose) {}
+        ObjectBuilder(bool isVerbose) : verbose(isVerbose) { messager = new SystemMessager("ObjectBuilder"); }
 
         void associateToken(token tk, string val) {
             tokens.insert(pair<token, string>(tk, val));
@@ -156,8 +157,15 @@ class ObjectBuilder
         // passes lexedList address for memory optimization
         map<circuitName, circuitProperties> buildCircuit(LEXED_LIST* lexedList);
 
+
+        ~ObjectBuilder()
+        {
+            delete messager;
+        }
     
     private:
+        SystemMessager* messager;
+
         map<circuitName, circuitProperties> builtCircuits;
 
         //FSM related variables

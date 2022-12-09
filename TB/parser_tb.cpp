@@ -3,13 +3,25 @@
 #include "../parser/linkedModuleBuilder.h"
 #include "../gate/PRIMLIB/PRIMLIB.h"
 #include <iostream>
-
+#include "../utils/systemMessages.h"
 
 using namespace std;
+
 int parser_tb()
 {
+	
+
 	LEXED_LIST lexedList;
 	DELIM_MAP delims;
+
+	//instanciation of a messager for the test bench
+	SystemMessager messager("parser_tb");
+
+	messager.INFO("superinfo");
+	messager.WARNING("superwarning");
+	messager.UNIMPLEMENTED("PasEncoreImplemente");
+	messager.ERROR<overflow_error>("supererreur");
+	
 
 	//instanciation of the ObjectBuilder isVerbose = true
 	ObjectBuilder objBuilder(true);

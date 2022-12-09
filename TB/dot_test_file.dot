@@ -1,11 +1,8 @@
 digraph NAND_MODULE {
 	A [label="INPUT"];
 	S [label="OUTPUT"];
-	NAND1 [label="NAND"];
 
 
-	A -> NAND1(IN1);
-	NAND1 -> NAND1(IN2);
-	NAND1 -> S(IN1);
+	A -> S(IN1);
 }
 

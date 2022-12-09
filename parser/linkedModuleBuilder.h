@@ -4,7 +4,6 @@
 #include "../gate/PRIMLIB/PRIMLIB.h"
 #include "../gate/sim_node.h"
 #include "module.h"
-#include "../utils/funcs.h"
 #include <algorithm>
 #include "objectBuilder.h"
 
