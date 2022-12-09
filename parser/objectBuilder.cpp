@@ -255,7 +255,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                 spitErrorAndExit("Invalid port specifier end token, have'" + codeWord 
                                + "' expected '" + tokens.at(INPUT_PORT_SPECIFIER_END) + "'.",currentLine, -1);
             else
-                nextState = circuitBuildState::READ_NEW_CIRCUIT_HDL_LINE_FIRST;
+                nextState = circuitBuildState::LINE_OF_CODE_END;
         break;
 
 

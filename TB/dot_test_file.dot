@@ -7,13 +7,13 @@ digraph NAND_MODULE {
 	INV1 [label="INV"];
 
 
-	A -> AND1(IN1);
+	A -> AND1(IN1)
 	B -> AND1(IN2);
 
 	AND1 -> INV1(IN1);
 
 	INV1 -> S(IN1);
-	INV1 -> AND1(IN1);
+
 }
 
 
