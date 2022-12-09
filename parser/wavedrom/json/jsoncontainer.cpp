@@ -1,4 +1,5 @@
 #include "jsoncontainer.h"
+#include "json.h"
 
 //std::string
 std::string JSONCONTAINER<std::string>::toString()
@@ -19,5 +20,5 @@ std::string JSONCONTAINER<int>::toString()
 
 void JSONCONTAINER<int>::fromString(std::string str)
 {
-    this->data = 1; //TODO: implement
+    this->data = stringToInt(str); //TODO: implement
 }

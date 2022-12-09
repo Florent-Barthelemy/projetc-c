@@ -128,3 +128,49 @@ std::vector<JSONFIELD*> STRUCT_FIELD::getAsArray(JSONPATH path)
 {
     throw std::domain_error("Not implemented right now.");
 }
+
+//UNSIZED_ARRAY_FIELD
+UNSIZED_ARRAY_FIELD::UNSIZED_ARRAY_FIELD(JSONFIELD* (*generator)()) : create(generator) {}
+
+void UNSIZED_ARRAY_FIELD::updateField(JSONPATH path, std::string val)
+{
+    if(path.size() <= 0)
+        throw std::domain_error("Domain is not a value.");
+
+    long index = stringToInt(path.back());
+    path.pop_back();
+
+    if(index >= fields.size())
+        if(index == fields.size())
+        {
+            fields.push_back(create());
+            fields.back()->updateField(path, val);
+        }
+        else
+            throw std::out_of_range("JSON out of range access issued.");
+    else
+        fields[index]->updateField(path, val);
+}
+
+JSONPARSER* UNSIZED_ARRAY_FIELD::getField(JSONPATH path)
+{
+    if(path.size() <= 0)
+        throw std::domain_error("Domain is not a value.");
+
+    long index = stringToInt(path.back());
+
+    if(index > fields.size())
+        throw std::out_of_range("JSON out of range access issued.");
+
+    path.pop_back();
+
+    return fields[index]->getField(path);
+}
+
+std::vector<JSONFIELD*> UNSIZED_ARRAY_FIELD::getAsArray(JSONPATH path)
+{
+    if(path.size() > 0)
+        throw std::domain_error("Unknown field.");
+
+    return fields;
+}
