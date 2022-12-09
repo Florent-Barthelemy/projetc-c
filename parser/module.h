@@ -6,6 +6,9 @@
 #include "../gate/PRIMLIB/PRIMLIB.h"
 #include "../utils/namedObj.h"
 #include <string>
+#include "../utils/systemMessages.h"
+#include <exception>
+#include <stdexcept>
 
 using namespace std;
 
@@ -50,7 +53,19 @@ class Module : public SIM_NODE
             {
                 //input forwarding
                 auto gate = this->moduleInputConns.find(*inputIt);
-                gate->second.state = this->getInConn(*inputIt)->state;
+
+                if(gate == moduleInputConns.end())
+                    messager.ERROR<std::range_error>("Internal error while trying to forward inputs to '"+ this->getName() +"' module content, element '" + *inputIt 
+                    + "' Is registered as a module output but is not registered in InputConns.");
+                
+                auto moduleInConn = getInConn(*inputIt);
+
+                if(*&moduleInConn == 0x00) //if module port is not connected, default to X
+                {
+                    gate->second.state = LOGICSTATE::X;
+                }
+                else
+                    gate->second.state = moduleInConn->state;
 
                 for(list<NODE<LOGICSTATE>*>::iterator gateOutput = gate->second.outputs.begin(); gateOutput != gate->second.outputs.end(); ++gateOutput)
                 {
@@ -87,9 +102,15 @@ class Module : public SIM_NODE
                 delete &it;
             }
 
+            delete &messager;
+
         }
 
+        void checkConnectivity_internal();
+        void checkConnectivity_IO();
+
     private:
+        SystemMessager messager = *(new SystemMessager("ModuleManager"));
         moduleContent modContent;
         map<string, NODE_CONN<LOGICSTATE>> moduleInputConns;
         map<string, NODE_CONN<LOGICSTATE>*> internalModuleOutputs; 

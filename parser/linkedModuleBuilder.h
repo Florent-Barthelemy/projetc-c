@@ -6,6 +6,9 @@
 #include "module.h"
 #include <algorithm>
 #include "objectBuilder.h"
+#include <stdexcept>
+#include <exception>
+#include "../utils/systemMessages.h"
 
 
 struct LinkedModuleBuilderConfig
@@ -24,8 +27,19 @@ class LinkedModuleBuilder
 
         map<string, Module*>* buildLinkedModule(objectBuilderOutput* objBuilderOutput);
 
+
+
+        //ERROR while trying to delete messager
+        // ~LinkedModuleBuilder()
+        // {
+        //     delete &messager;
+        // }
+
     private:
+        SystemMessager messager = *(new SystemMessager("LinkedModuleBuilder")); 
         bool isVerbose;
+
+        void check_IO_Connectivity(Module& mod);
 
 
 };

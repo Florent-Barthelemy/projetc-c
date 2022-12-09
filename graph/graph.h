@@ -58,6 +58,12 @@ public:
     */
     NODE_CONN<LOGICTYPE>* getInConn(std::string portName);
 
+    /// @brief returns a (const) map of the node inputs for
+    /// improved flexibility on top level connectivity checks 
+    /// @return map<nodeName, connector*>
+    /// @author Florent B.
+    const std::map<std::string, NODE_CONN<LOGICTYPE>*> getInputs() const;
+
     /**
     Gets output port pointer.
     \param portName: name of the port to get.
@@ -66,6 +72,9 @@ public:
     */
     NODE_CONN<LOGICTYPE>* getOutConn(std::string portName);
 };
+
+template <typename LOGICTYPE>
+const std::map<std::string, NODE_CONN<LOGICTYPE>*>  NODE<LOGICTYPE>::getInputs() const { return  this->inputs;}
 
 template <typename LOGICTYPE>
 NODE<LOGICTYPE>::NODE(std::vector<std::string>& inputNames, std::vector<std::string>& outputNames)

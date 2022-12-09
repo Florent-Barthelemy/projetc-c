@@ -17,11 +17,6 @@ int parser_tb()
 	//instanciation of a messager for the test bench
 	SystemMessager messager("parser_tb");
 
-	messager.INFO("superinfo");
-	messager.WARNING("superwarning");
-	messager.UNIMPLEMENTED("PasEncoreImplemente");
-	messager.ERROR<overflow_error>("supererreur");
-	
 
 	//instanciation of the ObjectBuilder isVerbose = true
 	ObjectBuilder objBuilder(true);
@@ -54,7 +49,10 @@ int parser_tb()
 	fstream tb0(filename, ios_base::in);
 
 	//lexing code
-	lex(tb0, delims, lexedList);
+	auto code = lex(tb0, delims, lexedList);
+	if(code != LEX_SUCCESS)
+		messager.ERROR<ios_base::failure>("Lexer error, probable bad syntax");
+	
  
     /* =========== ObjectBuilder Test ===========*/
 
@@ -83,7 +81,9 @@ int parser_tb()
 	SIM_NODE::registerType("XOR", xorCreator);
 	SIM_NODE::registerType("NXOR", nxorCreator);
 	SIM_NODE::registerType("INPUT", buffCreator);
+
 	SIM_NODE::setMaxDelta(100);
+
 	objectBuilderOutput circuitsList;
 
     //passing lexedList to the ObjectBuilder
@@ -99,15 +99,15 @@ int parser_tb()
 
 	map<string, Module*>::iterator it = builtSystemModule->find("NAND_MODULE");
 	it->second->connIn("A", &testConn1);
-	//it->second->connIn("B", &testConn2);
+	it->second->connIn("B", &testConn2);
 
-	testConn1.state = L;
+	//Check if the module is properly connected :
+	it->second->checkConnectivity_IO();
 
-	testConn2.state = L;
-
-	it->second->updateGate();
 
 	testConn1.state = H;
+	testConn2.state = H;
+
 	it->second->updateGate();
 	
 	cout << "OUTPUT : " << it->second->getOutConn("S")->state << endl;

@@ -20,11 +20,10 @@ map<circuitName, circuitProperties> ObjectBuilder::buildCircuit(LEXED_LIST* lexe
     for (LEXED_LIST::iterator it = lexedList->begin(); it != lexedList->end(); it++)
 	{
         iterateStateMachine(it); //iterating FSM with a new code element
-        
 	}
 
     if(!codeSectionCompleted)
-        spitErrorAndExit("Code stops unexpectedly, (missing quotes or end of block?)",0, -1);
+         spitErrorAndExit("Code stops unexpectedly, (missing quotes or end of block?)",lexedList->end()->line, -1);
     
     spitReportMessage();
         
@@ -117,6 +116,18 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             else if(codeWord == tokens.at(GRAPH_BLOCK_END))
             {
                 //the current module/circuit description ends
+                if(codeWord == tokens.at(GRAPH_BLOCK_END))
+                {
+                    auto elt = builtCircuits.insert(*(new circuit(currentCircuit)));
+
+                    if(elt.second == false)
+                        spitErrorAndExit("Double definition of circuit ' " + elt.first->first + "'.",currentLine, -1);
+                   
+                    codeSectionCompleted = true;
+                }
+                else
+                    spitErrorAndExit("Unexpected token '" + codeWord + "' after end of block.",currentLine, -1);
+
                 nextState = circuitBuildState::DESCRIPTION_END;
             }
             else if(isWordReserved(codeWord))
@@ -339,17 +350,9 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
         case circuitBuildState::DESCRIPTION_END :
 
             //try to insert a circuit/module into the built list
-            auto elt = builtCircuits.insert(*(new circuit(currentCircuit)));
-            codeSectionCompleted = true;
-
-            if(elt.second == false)
-                spitErrorAndExit("Double definition of circuit ' " + elt.first->first + "'.",currentLine, -1);
-            
-            else if(codeWord == tokens.at(DIGRAPH))
+            if(codeWord == tokens.at(DIGRAPH))
                 nextState = circuitBuildState::CREATE_NEW_CIRCUIT;
-
-            //the if(codeWord != "") is a lexer 'issue' workaround
-            else if(codeWord != "")
+            else
                 spitErrorAndExit("Unexpected token '" + codeWord + "' after end of block.",currentLine, -1);
             
         break;
@@ -359,6 +362,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
      currentState = nextState;
 
 }
+
 
 //could switch map<token, string> to map<token, string>* 
 bool ObjectBuilder::isWordReserved(string s)

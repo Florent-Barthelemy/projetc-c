@@ -53,8 +53,6 @@ map<string, Module*>* LinkedModuleBuilder::buildLinkedModule(objectBuilderOutput
             //cyling through all input elements of the current elt
             for(map<connectedElementName, portName>::iterator eltLinkIt = elt->second.inputElements.begin(); eltLinkIt != elt->second.inputElements.end(); eltLinkIt++)
             {
-                cout << "Element '" + eltLinkIt->first + "' connects to port '" + eltLinkIt->second + "' of element '" + elt->first + "'" << endl;
-
                 string currentElementName = elt->first;
                 string currentElementPort = eltLinkIt->second;
                 string elementToLinkTo = eltLinkIt->first;
@@ -97,6 +95,9 @@ map<string, Module*>* LinkedModuleBuilder::buildLinkedModule(objectBuilderOutput
             }
         }
 
+        currentModuleInstance->checkConnectivity_internal();
+
+        //inserting newly created module to the built list
         modules->insert(
             pair<string, Module*>(
                 currentModuleInstance->getName(),
@@ -108,7 +109,5 @@ map<string, Module*>* LinkedModuleBuilder::buildLinkedModule(objectBuilderOutput
     
     return modules;
 }
-
-
 
 

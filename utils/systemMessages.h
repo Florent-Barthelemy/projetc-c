@@ -46,6 +46,8 @@ class SystemMessager
         /// @param s Separator
         static void setMessageSeparator(std::string s) { messageSeparator = s; }
 
+        
+
     private:
         /// @brief Name of the sender (your current system block name)
         std::string sender;
