@@ -46,6 +46,10 @@ std::vector<JSONFIELD*> VALUE_FIELD::getAsArray(JSONPATH path)
     return vec;
 }
 
+std::string VALUE_FIELD::toString()
+{
+    return value->toString();
+}
 //ARRAY_FIELD
 ARRAY_FIELD::ARRAY_FIELD(std::vector<JSONFIELD*> fields) : fields(fields) {}
 
@@ -89,6 +93,19 @@ std::vector<JSONFIELD*> ARRAY_FIELD::getAsArray(JSONPATH path)
     return fields;
 }
 
+std::string ARRAY_FIELD::toString()
+{
+    std::string buf = "[\n";
+
+    for(auto it = fields.begin(); it != fields.end(); ++it)
+        buf += (*it)->toString() + ",\n";
+
+    buf = buf.substr(0, buf.size() - 2); //remove last ','
+    buf += "\n]";
+
+    return buf;
+}
+
 //STRUCT_FIELD
 STRUCT_FIELD::STRUCT_FIELD(std::map<std::string, JSONFIELD*> fields) : fields(fields) {}
 
@@ -127,6 +144,19 @@ JSONPARSER* STRUCT_FIELD::getField(JSONPATH path)
 std::vector<JSONFIELD*> STRUCT_FIELD::getAsArray(JSONPATH path)
 {
     throw std::domain_error("Not implemented right now.");
+}
+
+std::string STRUCT_FIELD::toString()
+{
+    std::string buf = "{";
+
+    for(auto it = fields.begin(); it != fields.end(); ++it)
+        buf += it->first + ":" + it->second->toString() + ",";
+
+    buf = buf.substr(0, buf.size() - 1);
+    buf += "}";
+
+    return buf;
 }
 
 //UNSIZED_ARRAY_FIELD
@@ -173,4 +203,17 @@ std::vector<JSONFIELD*> UNSIZED_ARRAY_FIELD::getAsArray(JSONPATH path)
         throw std::domain_error("Unknown field.");
 
     return fields;
+}
+
+std::string UNSIZED_ARRAY_FIELD::toString()
+{
+    std::string buf = "[\n";
+
+    for(auto it = fields.begin(); it != fields.end(); ++it)
+        buf += (*it)->toString() + ",\n";
+
+    buf = buf.substr(0, buf.size() - 2); //remove last ','
+    buf += "\n]";
+
+    return buf;
 }

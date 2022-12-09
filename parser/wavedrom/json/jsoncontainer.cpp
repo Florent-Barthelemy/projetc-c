@@ -4,7 +4,7 @@
 //std::string
 std::string JSONCONTAINER<std::string>::toString()
 {
-    return this->data;
+    return "\"" + this->data + "\"";
 }
 
 void JSONCONTAINER<std::string>::fromString(std::string str)

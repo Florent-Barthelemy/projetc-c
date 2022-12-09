@@ -31,6 +31,7 @@ public:
     virtual void updateField(JSONPATH, std::string) = 0;
     virtual JSONPARSER* getField(JSONPATH) = 0;
     virtual std::vector<JSONFIELD*> getAsArray(JSONPATH) = 0;
+    virtual std::string toString() = 0;
 };
 
 class VALUE_FIELD : public JSONFIELD
@@ -45,6 +46,8 @@ public:
     JSONPARSER* getField(JSONPATH path);
 
     std::vector<JSONFIELD*> getAsArray(JSONPATH path);
+
+    std::string toString();
 };
 
 class ARRAY_FIELD : public JSONFIELD
@@ -61,6 +64,8 @@ public:
     JSONPARSER* getField(JSONPATH path);
 
     std::vector<JSONFIELD*> getAsArray(JSONPATH path);
+
+    std::string toString();
 };
 
 class STRUCT_FIELD : public JSONFIELD
@@ -77,6 +82,8 @@ public:
     JSONPARSER* getField(JSONPATH path);
 
     std::vector<JSONFIELD*> getAsArray(JSONPATH path);
+
+    std::string toString();
 };
 
 class UNSIZED_ARRAY_FIELD : public JSONFIELD
@@ -92,6 +99,8 @@ public:
     JSONPARSER* getField(JSONPATH path);
 
     std::vector<JSONFIELD*> getAsArray(JSONPATH path);
+
+    std::string toString();
 };
 
 #endif

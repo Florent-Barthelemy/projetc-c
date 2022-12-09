@@ -23,7 +23,7 @@ void json_parser_tb()
 
         parseJSON(testFile, json);
 
-        
+        printf(json.toString().c_str());
     }
     catch(const std::exception& e)
     {
