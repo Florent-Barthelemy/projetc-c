@@ -29,7 +29,7 @@ int parser_tb()
 	ADD_DELIM(delims, "=", SAVE);
 	ADD_DELIM(delims, ";", SAVE);
 	ADD_DELIM(delims, "\n", DISCARD);
-	ADD_DELIM(delims, "\"", TOGGLE_STRING); //SAVE is necessary !
+	ADD_DELIM(delims, "\"", TOGGLE_STRING);
 	ADD_DELIM(delims, "->", SAVE);
 	ADD_DELIM(delims, "(", SAVE);
 	ADD_DELIM(delims, ")", SAVE);
@@ -71,7 +71,7 @@ int parser_tb()
 	SIM_NODE::registerType("XOR", xorCreator);
 	SIM_NODE::registerType("NXOR", nxorCreator);
 	SIM_NODE::registerType("INPUT", buffCreator);
-	
+	SIM_NODE::setMaxDelta(100);
 	objectBuilderOutput circuitsList;
 
     //passing lexedList to the ObjectBuilder
@@ -79,9 +79,26 @@ int parser_tb()
 
 
 
-	Module* builtSystemModule = lmBuilder.buildLinkedModule(&circuitsList);
+	map<string, Module*>* builtSystemModule = lmBuilder.buildLinkedModule(&circuitsList);
+
+		
+    NODE_CONN<LOGICSTATE> testConn1 = {X, {}};
+    NODE_CONN<LOGICSTATE> testConn2 = {X, {}};
+
+	map<string, Module*>::iterator it = builtSystemModule->find("NAND_MODULE");
+	it->second->connIn("A", &testConn1);
+	//it->second->connIn("B", &testConn2);
+
+	testConn1.state = L;
+
+	testConn2.state = L;
+
+	it->second->updateGate();
+
+	testConn1.state = H;
+	it->second->updateGate();
 	
-	
+	cout << "OUTPUT : " << it->second->getOutConn("S")->state << endl;
 
 	return 0;
 

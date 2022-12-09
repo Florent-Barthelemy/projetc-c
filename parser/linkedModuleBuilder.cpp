@@ -2,8 +2,10 @@
 
 
 
-Module* LinkedModuleBuilder::buildLinkedModule(objectBuilderOutput* objBuilderOutput)
+map<string, Module*>* LinkedModuleBuilder::buildLinkedModule(objectBuilderOutput* objBuilderOutput)
 {
+
+    map<string, Module*>* modules = new map<string, Module*>();
 
     for(map<circuitName, circuitProperties>::iterator currentCircuitIt  = objBuilderOutput->begin(); currentCircuitIt != objBuilderOutput->end(); ++currentCircuitIt)
     {
@@ -53,79 +55,57 @@ Module* LinkedModuleBuilder::buildLinkedModule(objectBuilderOutput* objBuilderOu
             {
                 cout << "Element '" + eltLinkIt->first + "' connects to port '" + eltLinkIt->second + "' of element '" + elt->first + "'" << endl;
 
-                string currentElementName = eltLinkIt->first;
+                string currentElementName = elt->first;
                 string currentElementPort = eltLinkIt->second;
-                string elementNameOfTheConecteed;
-                NODE_CONN<LOGICSTATE>* nodeToConnect;
+                string elementToLinkTo = eltLinkIt->first;
 
-                // //if the element at which we connect to (the connecteed) is an input
-                // if(binary_search(currentModuleInstance->getModuleInputNames()->begin(),
-                //                  currentModuleInstance->getModuleInputNames()->end(),
-                //                  elementNameOfTheConecteed))
 
-                // cout << "'" + elementNameOfTheConecteed + "' is an input" << endl;
+                //if the current element connects to the module input
+                if(binary_search(currentModuleInstance->getModuleInputNames()->begin(),
+                                 currentModuleInstance->getModuleInputNames()->end(),
+                                 elementToLinkTo))
+
+                currentModuleInstance->getContent()->find(currentElementName)->second->connIn
+                (
+                    currentElementPort,
+                    &(currentModuleInstance->getModuleInputConns()->find(elementToLinkTo)->second)
+                );
                 
-                // else if(binary_search(currentModuleInstance->getModuleOutputNames()->begin(),
-                //                       currentModuleInstance->getModuleOutputNames()->end(),
-                //                       elementNameOfTheConecteed))
-
-                // cout << "'" + elementNameOfTheConecteed + "' is an output" << endl;
-
-                // else
-                // {
-                //     nodeToConnect = currentModuleInstance->getContent()->find(elt->first)->second->getOutConn(PRIMGATE_STD_OUT);
-
-                //     currentModuleInstance->getContent()->find(currentElementName)->connIn(
-                //         currentElementPort,
-                //         nodeToConnect);
-                // }
-
                 
-            
-            
-            //     //finding if the incomming connection is an input of the module.
-            //     if(binary_search(currentModuleInstance->getModuleInputNames()->begin(), currentModuleInstance->getModuleInputNames()->end(),  eltLinkIt->first))
-            //         currentModuleInstance->getContent()->at(elt->first)->connIn(
-            //             eltLinkIt->second,
-            //             &(currentModuleInstance->getModuleInputConns()->at(eltLinkIt->first))
-            //         );
 
-            //     //finding if the incomming connection is an output of the module (it means feedback).
-            //     else if(binary_search(currentModuleInstance->getModuleOutputNames()->begin(), currentModuleInstance->getModuleOutputNames()->end(),  eltLinkIt->first))
-            //         currentModuleInstance->getContent()->at(elt->first)->connIn(
-            //             eltLinkIt->second,
-            //             currentModuleInstance->getOutConn(eltLinkIt->first)
-            //         );
+                else if(binary_search(currentModuleInstance->getModuleOutputNames()->begin(),
+                                      currentModuleInstance->getModuleOutputNames()->end(),
+                                      currentElementName))
 
-            //     //otherwise, it is a gate to link inside the module
-            //     else
-            //     {
-            //         currentModuleInstance->getContent()->at(elt->first)->connIn(
-            //         eltLinkIt->second,
-            //         currentModuleInstance->getContent()->at(eltLinkIt->first)->getOutConn(PRIMGATE_STD_OUT)
-            //         );
-            //     }
+                currentModuleInstance->getInternalModuleOutputs()->insert
+                (
+                    pair<string, NODE_CONN<LOGICSTATE>*>(
+                        currentElementName,
+                        currentModuleInstance->getContent()->find(elementToLinkTo)->second->getOutConn(PRIMGATE_STD_OUT)
+                    )
+                );
+
+                else
+                {
+                    currentModuleInstance->getContent()->find(currentElementName)->second->connIn(
+                        currentElementPort,
+                        currentModuleInstance->getContent()->find(elementToLinkTo)->second->getOutConn(PRIMGATE_STD_OUT)
+                    );
+                }
                 
             }
         }
 
-
+        modules->insert(
+            pair<string, Module*>(
+                currentModuleInstance->getName(),
+                currentModuleInstance   
+            )
+        );
 
     }
     
-    moduleInstanceParams p;
-    p.moduleName = "SUPER MODULE";
-    p.moduleInputNames = {"A", "B"};
-    p.moduleOutputNames = {"S1", "s2"};
-
-    
-
-    Module* builtModule = new Module(p);
-
-  
-
-
-    return builtModule;
+    return modules;
 }
 
 

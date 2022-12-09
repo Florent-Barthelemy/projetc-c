@@ -23,7 +23,7 @@ class LinkedModuleBuilder
     public:
         LinkedModuleBuilder(LinkedModuleBuilderConfig conf) : isVerbose(conf.isVerbose) {}
 
-        Module* buildLinkedModule(objectBuilderOutput* objBuilderOutput);
+        map<string, Module*>* buildLinkedModule(objectBuilderOutput* objBuilderOutput);
 
     private:
         bool isVerbose;
