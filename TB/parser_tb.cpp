@@ -98,14 +98,17 @@ int parser_tb()
     NODE_CONN<LOGICSTATE> testConn2 = {X, {}};
 
 	map<string, Module*>::iterator it = builtSystemModule->find("NAND_MODULE");
+	
+	
+	
 	it->second->connIn("A", &testConn1);
-	it->second->connIn("B", &testConn2);
+	//it->second->connIn("B", &testConn2);
 
 	//Check if the module is properly connected :
 	it->second->checkConnectivity_IO();
 
 
-	testConn1.state = H;
+	testConn1.state = L;
 	testConn2.state = H;
 
 	it->second->updateGate();

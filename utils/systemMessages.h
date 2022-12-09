@@ -34,9 +34,21 @@ class SystemMessager
         template <typename ERR>
         void ERROR(std::string msg);
 
+        /// @brief Sends a .dot syntax error message to the stream
+        ///        with a normalized format (throws an exception)
+        /// @param msg Message to print
+        /// @param ex std::exception to return
+        /// @tparam ERR error typename
+        template <typename ERR>
+        void SYNATX_ERROR(std::string msg, unsigned long line);
+
         /// @brief Sends an unimplemented function message and throws an exception
         /// @param msg Message to print
         void UNIMPLEMENTED(std::string msg);
+        
+        /// @brief Sends a debug message to the stream (low level info)
+        /// @param msg Debug message
+        void DEBUG(std::string msg);
     
         /// @brief Sets the messager output stream
         /// @param os The messaging stream
@@ -62,6 +74,16 @@ class SystemMessager
 };
 
 template <typename ERR>
+void SystemMessager::SYNATX_ERROR(std::string msg, unsigned long line)
+{
+    printModuleName();
+    *unifiedMessageStream << "\033[1;31mERROR\033[0m @line " << line;
+    *unifiedMessageStream << " " + messageSeparator + " ";
+    *unifiedMessageStream << msg << std::endl;
+    throw new ERR(msg);
+}
+
+template <typename ERR>
 void SystemMessager::ERROR(std::string msg)
 {
     printModuleName();
@@ -70,6 +92,10 @@ void SystemMessager::ERROR(std::string msg)
     *unifiedMessageStream << msg << std::endl;
     throw new ERR(msg);
 }
+
+
+
+
 
 
 #endif /*SYS_MSG_H_*/

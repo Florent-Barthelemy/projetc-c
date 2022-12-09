@@ -9,7 +9,7 @@ void Module::checkConnectivity_internal()
        for(map<string, NODE_CONN<LOGICSTATE>*>::const_iterator inputPortIt = inpts.begin(); inputPortIt != inpts.end(); ++inputPortIt)
        {
             if(inputPortIt->second == 0x00)
-                messager.WARNING("Input port '" + inputPortIt->first + "' of '" + elementIt->first + "' is floating, simulation will default its state to X");
+                messager.WARNING("Input port '" + inputPortIt->first + "' of element '" + elementIt->first + "' in module '" + this->getName() +"' is floating, simulation will default its state to X");
        }
     }
 }
@@ -21,7 +21,7 @@ void Module::checkConnectivity_IO()
     {
         auto cInputConn = this->getInConn(*it);
         if(*&cInputConn == 0x00)
-            messager.WARNING("Input connector '" + *it + "' of module '" + this->getName() 
+            messager.WARNING("Input port '" + *it + "' of module '" + this->getName() 
                     + "' is floating, simulation will default its state to X.");
     }
 }

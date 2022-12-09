@@ -39,8 +39,6 @@ class LinkedModuleBuilder
         SystemMessager messager = *(new SystemMessager("LinkedModuleBuilder")); 
         bool isVerbose;
 
-        void check_IO_Connectivity(Module& mod);
-
 
 };
 

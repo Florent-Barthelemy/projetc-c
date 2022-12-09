@@ -192,32 +192,6 @@ class ObjectBuilder
 
         bool isAnElementFeildInitializer(string s);
 
-        /* user text*/
-        void spitErrorAndExit(string message,unsigned long line, int exitCode)
-        {
-            cout << "ObjectBuilder \033[1;31mERROR\033[0m @line " << line << " > " << message << endl;
-            //terminate the program
-            cout << "Exitting...\n";
-            exit(exitCode);
-        }
-
-        void spitUnimplementedAndExit(string message, int exitCode)
-        { 
-            if(verbose)
-            {
-                cout << "ObjectBuilder \033[1;35mUNIMPLEMENTED\033[0m > " << message << endl;
-                //terminate the program
-                cout << "Exitting...\n";
-            }
-            exit(exitCode);
-        }
-
-        void spitVerboseMessage(string message)
-        {
-            if(verbose)
-                cout << "objectBuilder \033[1;32mINFO\033[0m > " << message << endl;
-        }
-
         void spitReportMessage();
 };
 

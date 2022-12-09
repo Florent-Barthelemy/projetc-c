@@ -19,7 +19,15 @@ void SystemMessager::WARNING(std::string msg)
 void SystemMessager::INFO(std::string msg)
 {
     printModuleName();
-    *unifiedMessageStream << "\033[1;32mINFO\033[0m";
+    *unifiedMessageStream << "\033[1;35mINFO\033[0m";
+    *unifiedMessageStream << " " + messageSeparator + " ";
+    *unifiedMessageStream << msg << std::endl;
+}
+
+void SystemMessager::DEBUG(std::string msg)
+{
+    printModuleName();
+    *unifiedMessageStream << "\033[1;34mDEBUG\033[0m";
     *unifiedMessageStream << " " + messageSeparator + " ";
     *unifiedMessageStream << msg << std::endl;
 }

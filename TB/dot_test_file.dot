@@ -1,3 +1,6 @@
+#include "mod.dot"
+
+
 digraph NAND_MODULE {
 	A [label="INPUT"];
 	B [label="INPUT"];
@@ -6,15 +9,49 @@ digraph NAND_MODULE {
 	AND1 [label="AND"];
 	INV1 [label="INV"];
 
+	INV2 [label="INV"];
+	INV3 [label="INV"];
 
-	A -> AND1(IN1)
+	A -> AND1(IN1);
 	B -> AND1(IN2);
 
+	MOD2 -> this.A;
+
+
+
+
 	AND1 -> INV1(IN1);
+	
 
 	INV1 -> S(IN1);
 
 }
+
+digraph MOD2 {
+	A [label="INPUT"];
+	B [label="INPUT"];
+	S [label="OUTPUT"];
+
+	AND1 [label="AND"];
+	INV1 [label="INV"];
+
+	INV2 [label="INV"];
+	INV3 [label="INV"];
+
+	A -> AND1(IN1);
+	B -> AND1(IN2);
+
+
+
+
+
+	AND1 -> INV1(IN1);
+	
+
+	INV1 -> S(IN1);
+
+}
+
 
 
 

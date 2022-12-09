@@ -68,9 +68,6 @@ map<string, Module*>* LinkedModuleBuilder::buildLinkedModule(objectBuilderOutput
                     currentElementPort,
                     &(currentModuleInstance->getModuleInputConns()->find(elementToLinkTo)->second)
                 );
-                
-                
-                
 
                 else if(binary_search(currentModuleInstance->getModuleOutputNames()->begin(),
                                       currentModuleInstance->getModuleOutputNames()->end(),
