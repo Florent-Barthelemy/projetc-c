@@ -2,6 +2,9 @@
 
 std::ostream* SystemMessager::unifiedMessageStream = &std::cout;
 std::string SystemMessager::messageSeparator = ">";
+std::vector<messageType> SystemMessager::shownMessages = {_INFO, _WARN, _ERROR, _SYNTAX_ERR, _UNIMP};
+std::map<messageType, std::function<void(void)>> SystemMessager::traps = *(new std::map<messageType, std::function<void(void)>>());
+
 
 void SystemMessager::printModuleName()
 {
@@ -10,33 +13,55 @@ void SystemMessager::printModuleName()
 
 void SystemMessager::WARNING(std::string msg)
 {
-    printModuleName();
-    *unifiedMessageStream << "\033[1;43;30mWARNING\033[0m";
-    *unifiedMessageStream << " " + messageSeparator + " ";
-    *unifiedMessageStream << msg << std::endl;
+    if(isShownMessage(_WARN))
+    {
+        printModuleName();
+        *unifiedMessageStream << "\033[1;43;30mWARNING\033[0m";
+        *unifiedMessageStream << " " + messageSeparator + " ";
+        *unifiedMessageStream << msg << std::endl;
+    }
+
+    callTrap(_WARN);
 }
 
 void SystemMessager::INFO(std::string msg)
 {
-    printModuleName();
-    *unifiedMessageStream << "\033[1;35mINFO\033[0m";
-    *unifiedMessageStream << " " + messageSeparator + " ";
-    *unifiedMessageStream << msg << std::endl;
+    if(isShownMessage(_INFO))
+    {
+        printModuleName();
+        *unifiedMessageStream << "\033[1;35mINFO\033[0m";
+        *unifiedMessageStream << " " + messageSeparator + " ";
+        *unifiedMessageStream << msg << std::endl;
+    }
+
+    callTrap(_INFO);
 }
 
 void SystemMessager::DEBUG(std::string msg)
 {
-    printModuleName();
-    *unifiedMessageStream << "\033[1;34mDEBUG\033[0m";
-    *unifiedMessageStream << " " + messageSeparator + " ";
-    *unifiedMessageStream << msg << std::endl;
+    if(isShownMessage(_DEBG))
+    {
+        printModuleName();
+        *unifiedMessageStream << "\033[1;34mDEBUG\033[0m";
+        *unifiedMessageStream << " " + messageSeparator + " ";
+        *unifiedMessageStream << msg << std::endl;
+    }
+
+    callTrap(_DEBG);
 }
 
 void SystemMessager::UNIMPLEMENTED(std::string msg)
 {
-    printModuleName();
-    *unifiedMessageStream << "\033[1;35mUNIMPLEMENTED\033[0m";
-    *unifiedMessageStream << " " + messageSeparator + " ";
-    *unifiedMessageStream << msg << std::endl;
-     std::__throw_bad_function_call();
+    if(isShownMessage(_UNIMP))
+    {
+        printModuleName();
+        *unifiedMessageStream << "\033[1;35mUNIMPLEMENTED\033[0m";
+        *unifiedMessageStream << " " + messageSeparator + " ";
+        *unifiedMessageStream << msg << std::endl;
+    }
+
+    callTrap(_UNIMP);
+    std::__throw_bad_function_call();
 }
+
+

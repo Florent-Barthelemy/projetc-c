@@ -4,6 +4,7 @@
 #include "../gate/PRIMLIB/PRIMLIB.h"
 #include <iostream>
 #include "../utils/systemMessages.h"
+#include "../utils/traps.h"
 
 using namespace std;
 
@@ -16,6 +17,12 @@ int parser_tb()
 
 	//instanciation of a messager for the test bench
 	SystemMessager messager("parser_tb");
+
+	SystemMessager::setTrapCallbackForMessage(_ERROR, TRAPS::__TRAP__ERROR);
+	SystemMessager::setTrapCallbackForMessage(_SYNTAX_ERR, TRAPS::__TRAP__ERROR);
+	SystemMessager::setTrapCallbackForMessage(_UNIMP, TRAPS::__TRAP__UNIMP);
+
+
 
 
 	//instanciation of the ObjectBuilder isVerbose = true
@@ -102,7 +109,7 @@ int parser_tb()
 	
 	
 	it->second->connIn("A", &testConn1);
-	//it->second->connIn("B", &testConn2);
+	it->second->connIn("B", &testConn2);
 
 	//Check if the module is properly connected :
 	it->second->checkConnectivity_IO();
