@@ -110,7 +110,7 @@ class Module : public SIM_NODE
         void checkConnectivity_IO();
 
     private:
-        SystemMessager messager = *(new SystemMessager("ModuleManager"));
+        SystemMessager messager = *(new SystemMessager(this->getName() + " Module"));
         moduleContent modContent;
         map<string, NODE_CONN<LOGICSTATE>> moduleInputConns;
         map<string, NODE_CONN<LOGICSTATE>*> internalModuleOutputs; 

@@ -1,3 +1,4 @@
+
 digraph NAND_MODULE {
 	A [label="INPUT"];
 	B [label="INPUT"];
@@ -6,8 +7,11 @@ digraph NAND_MODULE {
 	AND1 [label="AND"];
 	INV1 [label="INV"];
 
+	INV2 [label="INV"];
+
 	A -> AND1(IN1);
 	B -> AND1(IN2);
+
 
 
 
@@ -19,23 +23,30 @@ digraph NAND_MODULE {
 
 }
 
-digraph TOP_LEVEL
-{
-	A [label="input"];
-	B [label="input"];
-	S [label="output"];
 
+digraph BONJOUR {
+	A [label="INPUT"];
+	B [label="INPUT"];
+	S [label="OUTPUT"];
+
+	AND1 [label="AND"];
 	INV1 [label="INV"];
 
-	A -> INV1(IN1);
+	GLACE_AU8CACA [label="INV"];
 
-	INV1 -> NAND_MODULE(A);
+	A -> AND1(IN1);
+	B -> AND1(IN2);
 
-	B -> NAND_MODULE(B);
 
-	NAND_MODULE(S) -> S(IN1);
+
+
+
+	AND1 -> INV1(IN1);
+	
+
+	INV1 -> S(IN1);
+
 }
-
 
 
 

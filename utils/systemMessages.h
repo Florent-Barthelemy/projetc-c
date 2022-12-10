@@ -114,12 +114,9 @@ class SystemMessager
 
         static void callTrap(messageType mType)
         {
-            try
-            {
-                auto trapCaller = traps.at(mType);
-                trapCaller();
-            }
-            catch (std::exception){} 
+                auto trapCaller = traps.find(mType);
+                if(trapCaller != traps.end())
+                    trapCaller->second();
         }
 
         static bool isShownMessage(messageType mType)

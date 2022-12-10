@@ -56,6 +56,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
     //cout << "FSM codeWord : '" << codeWord << "'\n";
 
     string codeWord = it->cnt;
+    map<string, circuitElementProperties> importedBlockModules;
     unsigned long currentLine = it->line;
     
     switch(currentState)
@@ -83,6 +84,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             {
                 //Syntax is OK, instanciate a new circuit
                 currentCircuit = *(new circuit());
+
                 currentCircuit.first = codeWord;
 
                 messager->DEBUG("Creating circuit, name : " + codeWord);
@@ -106,16 +108,36 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                 //if line is empty
                 nextState = currentState;
 
+            else if(codeWord == tokens.at(USING))
+                nextState = circuitBuildState::USING_STATEMENT;
+
+
             else if(codeWord == tokens.at(GRAPH_BLOCK_END))
             {
                 //the current module/circuit description ends
                 if(codeWord == tokens.at(GRAPH_BLOCK_END))
                 {
                     auto elt = builtCircuits.insert(*(new circuit(currentCircuit)));
-
                     if(elt.second == false)
                         messager->SYNATX_ERROR<runtime_error>("Double definition of circuit ' " + elt.first->first + "'.",currentLine);
                    
+                    for(auto it = elt.first->second.elements.begin(); it != elt.first->second.elements.end(); ++it)
+                    {
+                        if(it->second.elementType == typeTokens.at(INPUT)) //if an output is detected in the module, add it to the inputs vector
+                            elt.first->second.inputElements.insert(
+                                *(new pair<string, string>(
+                                    it->first,
+                                    ""
+                                ))); //no need to check bouble output def.
+                        
+                        if(it->second.elementType == typeTokens.at(OUTPUT)) //if an output is detected in the module
+                            elt.first->second.outputElements.insert(
+                                *(new pair<string, string>(
+                                    it->first,
+                                    ""
+                                ))); //no need to check bouble output def.
+                    }
+
                     codeSectionCompleted = true;
                 }
                 else
@@ -132,6 +154,31 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                 nextState = circuitBuildState::READ_NEW_CIRCUIT_HDL_LINE_SECOND;
             }
                   
+        break;
+
+        case circuitBuildState::USING_STATEMENT:
+            if(codeWord == tokens.at(MODULE))
+                nextState = circuitBuildState::IMPORT_MODULE;
+            else
+                messager->SYNATX_ERROR<runtime_error>("Unkown import type '" + codeWord + "'.", currentLine);
+        break;
+
+        case circuitBuildState::IMPORT_MODULE:
+            if(builtCircuits.find(codeWord) == builtCircuits.end())
+                messager->SYNATX_ERROR<runtime_error>("Undefined reference to module '" + codeWord + "'.", currentLine);
+            
+            currentCircuit.second.elements.insert
+            (
+                *(new pair<string, circuitElementProperties>(
+                    codeWord, //name of the imported module
+                    *(new circuitElementProperties({})
+                    )
+                ))
+            );
+            
+            messager->UNIMPLEMENTED("Module import is not yet implemented.");
+
+            nextState = circuitBuildState::LINE_OF_CODE_END;
         break;
 
         case circuitBuildState::READ_NEW_CIRCUIT_HDL_LINE_SECOND :
@@ -156,6 +203,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                 messager->SYNATX_ERROR<runtime_error>("Invalid properties feild token '" + codeWord + "' after '" + codeWordStack.front() + "' element.",currentLine);
 
             break;
+
         
 
         //TODO - ADD ELEMENT LINK INFO
@@ -165,9 +213,13 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             bool leftOpDoNotEsist = false;
             bool rightOpDoNotEsist = false;
 
+
+            //if the left element is neither declared in the current module or in a previously compiled one
             if(currentCircuit.second.elements.find(codeWordStack.front()) == currentCircuit.second.elements.end()) 
                 leftOpDoNotEsist = true;
-            else if(currentCircuit.second.elements.find(codeWord) == currentCircuit.second.elements.end())
+
+            //if the right element is neither declared in the current module or in a previously compiled one
+            if(currentCircuit.second.elements.find(codeWord) == currentCircuit.second.elements.end())
                 rightOpDoNotEsist = true;
             
             if(rightOpDoNotEsist)
@@ -216,7 +268,9 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
 
             messager->DEBUG("LINKAGE :: '" + leftOperand +   "' output connects to port '" + _portName + "' of '" + rightOperand + "'");
 
-            //at this point, we know that the operands do exist
+            //at this point, we know that the operands exists and are either a module of a circuit elt
+            //if the right operand is a module, handle special case :
+
             circuitElementCollection::iterator leftElement = currentCircuit.second.elements.find(leftOperand);
             circuitElementCollection::iterator rightElement = currentCircuit.second.elements.find(rightOperand);
             
@@ -229,7 +283,8 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
 
             */
            map<connectedElementName, portName>::iterator elt = rightElement->second.inputElements.find(leftOperand);
-            for(auto inputEltIt = rightElement->second.inputElements.begin(); inputEltIt != rightElement->second.inputElements.end(); ++inputEltIt)
+        
+        for(auto inputEltIt = rightElement->second.inputElements.begin(); inputEltIt != rightElement->second.inputElements.end(); ++inputEltIt)
             {
                 if(_portName == inputEltIt->second)
                 {

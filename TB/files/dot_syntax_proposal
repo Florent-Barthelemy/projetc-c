@@ -1,0 +1,14 @@
+#using a previously compiled module in a digraph
+
+digraph mod1 {} //creating a module
+
+digraph top_level
+{
+    using module mod1; //retuns an error if mod1 is undefined
+                       //if it is defined, compiler willm consider it as a circuit element
+    
+    ....
+    MYOUT [label="OUTPUT"];
+    mod1.output(S) -> X(IN1); //multi-output syntax
+}
+

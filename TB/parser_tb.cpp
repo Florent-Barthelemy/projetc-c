@@ -18,6 +18,8 @@ int parser_tb()
 	//instanciation of a messager for the test bench
 	SystemMessager messager("parser_tb");
 
+	SystemMessager::setShownMessages({_ALL});
+	
 	SystemMessager::setTrapCallbackForMessage(_ERROR, TRAPS::__TRAP__ERROR);
 	SystemMessager::setTrapCallbackForMessage(_SYNTAX_ERR, TRAPS::__TRAP__ERROR);
 	SystemMessager::setTrapCallbackForMessage(_UNIMP, TRAPS::__TRAP__UNIMP);
@@ -39,6 +41,7 @@ int parser_tb()
 	ADD_DELIM(delims, "}", SAVE);
 	ADD_DELIM(delims, "\t", DISCARD);
 	ADD_DELIM(delims, "[", SAVE);
+	ADD_DELIM(delims, ".", SAVE);
 	ADD_DELIM(delims, "]", SAVE);
 	ADD_DELIM(delims, "=", SAVE);
 	ADD_DELIM(delims, ";", SAVE);
@@ -77,6 +80,12 @@ int parser_tb()
 	objBuilder.associateToken(token::QUOTES, "\"");
 	objBuilder.associateToken(token::INPUT_PORT_SPECIFIER_START, "(");
 	objBuilder.associateToken(token::INPUT_PORT_SPECIFIER_END, ")");
+	objBuilder.associateToken(token::OBJECT_SPECIFIER, ".");
+	objBuilder.associateToken(token::USING, "using");
+	objBuilder.associateToken(token::MODULE, "module");
+	
+	objBuilder.associateTypeToken(typeToken::INPUT, "input");
+	objBuilder.associateTypeToken(typeToken::OUTPUT, "output");
 
 	objBuilder.associateElementFeild(elementFeildInitializer::LABEL, "label");
 

@@ -74,7 +74,11 @@ enum class circuitBuildState : uint8_t
     FEILD_INITIALIZER,
     FEILD_INITIALIZER_ASSIGN,
     SET_ELEMENT_LABEL,
-
+    
+    OBJECT_SPECIFIER,
+    OUTPUT_PORT_SPECIFIER,
+    USING_STATEMENT,
+    IMPORT_MODULE,
 
     /*Linkage port specifier state*/
     INPUT_PORT_SPECIFIER_BEGIN,
@@ -88,12 +92,18 @@ enum class circuitBuildState : uint8_t
 
 enum token
 {
+
+
   SPACE,
+  OBJECT_SPECIFIER,
   DIGRAPH,
   GRAPH_BLOCK_BEGIN,
   GRAPH_BLOCK_END,
   ELEMENT_PARAMS_BEGIN,
   ELEMENT_PARAMS_END,
+
+  USING,
+  MODULE,
 
   INPUT_PORT_SPECIFIER_START,
   INPUT_PORT_SPECIFIER_END,
@@ -110,6 +120,12 @@ enum elementFeildInitializer
     LABEL,
 };
 
+
+enum typeToken
+{
+  INPUT,
+  OUTPUT
+};
 /*  The circuitProperties struct defines the content
     of a circuit/module and the location of its inputs and outputs
 */
@@ -123,6 +139,9 @@ struct circuitProperties
 
     /*Individual elements containted into the circuit*/
     circuitElementCollection elements;
+
+    map<portName, connectedElementName> inputElements;
+    map<portName, connectedElementName> outputElements; 
 };
 
 typedef pair<circuitName, circuitProperties> circuit; 
@@ -146,6 +165,10 @@ class ObjectBuilder
 
         void associateElementFeild(elementFeildInitializer f, string val) {
             elementFeildInitializers.insert(pair<elementFeildInitializer, string>(f, val));
+        }
+
+        void associateTypeToken(typeToken f, string val) {
+            typeTokens.insert(pair<typeToken, string>(f, val));
         }
 
         int getTotalElementCount();
@@ -176,6 +199,7 @@ class ObjectBuilder
 
 
         map<token, string> tokens;
+        map<typeToken, string> typeTokens;
         map<elementFeildInitializer, string> elementFeildInitializers;
 
         /*Small FSM code word memory to allow for syntax distinction*/
@@ -192,7 +216,6 @@ class ObjectBuilder
 
         bool isAnElementFeildInitializer(string s);
 
-        void spitReportMessage();
 };
 
 
