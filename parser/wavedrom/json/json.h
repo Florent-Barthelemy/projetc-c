@@ -20,7 +20,7 @@ class UNSIZED_ARRAY_FIELD;
 template<typename T, T arg>
 JSONFIELD* fieldGenerator()
 {
-    return new VALUE_FIELD(new JSONCONTAINER<T>(arg));
+    return (JSONFIELD*) new VALUE_FIELD(new JSONCONTAINER<T>(arg));
 }
 
 int stringToInt(std::string str);
