@@ -113,42 +113,29 @@ int parser_tb()
 	map<string, Module*>* builtSystemModule = lmBuilder.buildLinkedModule(&circuitsList);
 
 		
-    NODE_CONN<LOGICSTATE> bitIn = {X, {}};
-    NODE_CONN<LOGICSTATE> clock = {X, {}};
+    NODE_CONN<LOGICSTATE> A = {X, {}};
+    NODE_CONN<LOGICSTATE> B = {X, {}};
 
-	map<string, Module*>::iterator it = builtSystemModule->find("DFF_TB");
+	map<string, Module*>::iterator it = builtSystemModule->find("NAND_MODULE");
 	if(it == builtSystemModule->end())
 		messager.ERROR<ios::failure>("Cicruit do not exist");
 	
 	
-	it->second->connIn("bitIn", &bitIn);
-	it->second->connIn("clock", &clock);
+	it->second->connIn("A", &A);
+	it->second->connIn("B", &B);
+
 
 	//Check if the module is properly connected :
 	it->second->checkConnectivity_IO();
 
+	A.state = L;
+	B.state = L;
 
-	bitIn.state = L;
-	clock.state = L;
-
-	it->second->updateGate();
-
-	bitIn.state = H;
-	clock.state = L;
 
 	it->second->updateGate();
 
-	bitIn.state = H;
-	clock.state = H;
-
-	it->second->updateGate();
-
-	bitIn.state = H;
-	clock.state = L;
-
-	it->second->updateGate();
 	
-	cout << "OUTPUT : " << it->second->getOutConn("output")->state << endl;
+	cout << "OUTPUT : " << it->second->getOutConn("S")->state << endl;
 
 	return 0;
 

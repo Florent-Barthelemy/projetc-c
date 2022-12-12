@@ -61,4 +61,8 @@ class DLATCH : public SIM_NODE {
         void updateState();
 };
 
+SIM_NODE* dffCreator(INIT_PARAM params);
+SIM_NODE* dlatchCreator(INIT_PARAM params);
+
+
 #endif
