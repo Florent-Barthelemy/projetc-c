@@ -92,3 +92,54 @@ void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
         handler.addStimuli(nameContainer->getValue(), newStimulis);
     }
 }
+
+JSON generateWavedromSigs(ACQUISITION_HANDLER& handler)
+{
+    WAVEDROM_JSON(json);
+    std::map<std::string, std::vector<TIMED_SIG>> sigs;
+    handler.saveAcquisition(sigs);
+
+    int iJson = 0;
+    std::string strJson;
+    long currentTimestamp;
+
+    for(std::map<std::string, std::vector<TIMED_SIG>>::iterator sigIT = sigs.begin(); sigIT != sigs.end(); ++sigIT, ++iJson)
+    {
+        strJson = ""; currentTimestamp = 0;
+        for(std::vector<TIMED_SIG>::iterator timedSigIt = sigIT->second.begin(); timedSigIt != sigIT->second.end(); ++timedSigIt)
+        {
+            while(currentTimestamp < timedSigIt->timestamp)
+            {
+                strJson += ".";
+                currentTimestamp++;
+            }
+            
+            switch (timedSigIt->state)
+            {
+            case X:
+                strJson += "X";
+                break;
+            case Z:
+                strJson += "Z";
+                break;
+            case L:
+                strJson += "0";
+                break;
+            case H:
+                strJson += "1";
+                break;
+            
+            default:
+                wavedromLogger.WARNING("Failed to decode state '" + timedSigIt->state + (std::string) "' to wavdrom.");
+                break;
+            }
+
+            currentTimestamp++;
+        }
+
+        json.updateField({"signal", std::to_string(iJson), "name"}, sigIT->first);
+        json.updateField({"signal", std::to_string(iJson), "wave"}, strJson);
+    }
+
+    return json;
+}

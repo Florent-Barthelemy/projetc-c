@@ -139,3 +139,8 @@ void parseJSON(std::fstream& stream, JSON& json)
     if(currentState != END_FIELD || currentPath.size() > 0)
         jsonLogger.SYNATX_ERROR<std::invalid_argument>("End of file arrived before all fields are closed.", llist.front().line);
 }
+
+void writeJSON(std::fstream& stream, JSON& json)
+{
+    stream << json.toString();
+}

@@ -37,6 +37,13 @@ typedef std::map<NODE_CONN<LOGICSTATE>*, std::pair<std::string, std::vector<TIME
 
 class ACQUISITION_HANDLER
 {
+private:
+    ACQUISITION_MAP acquisitions;
+
+public:
+    void registerAcquisition(NODE_CONN<LOGICSTATE>* conn, std::string name);
+    void acquire(long timestamp);
+    void saveAcquisition(std::map<std::string, std::vector<TIMED_SIG>>& container);
 
 };
 

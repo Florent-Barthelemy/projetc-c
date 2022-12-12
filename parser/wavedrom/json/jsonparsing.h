@@ -27,5 +27,6 @@ const DELIM jsonDelims[] = {
 };
 
 void parseJSON(std::fstream&, JSON&);
+void writeJSON(std::fstream&, JSON&);
 
 #endif

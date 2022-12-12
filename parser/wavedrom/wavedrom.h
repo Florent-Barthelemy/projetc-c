@@ -9,5 +9,6 @@ JSONFIELD* wavedromGenerator();
 #define WAVEDROM_JSON(varName) JSON varName = {{"signal", new UNSIZED_ARRAY_FIELD(wavedromGenerator)}};
 
 void generateStimuliData(JSON& json, STIMULI_HANDLER& handler);
+JSON generateWavedromSigs(ACQUISITION_HANDLER& handler);
 
 #endif
