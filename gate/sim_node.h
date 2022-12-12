@@ -21,7 +21,7 @@ class SIM_NODE : public NODE<LOGICSTATE>, public NAMEDOBJ, public TYPE_REG<SIM_N
 {
 private:
     std::map<std::string, LOGICSTATE> prevOutStates;
-    short deltaCycle;
+    short deltaCycle = 0;
     static unsigned short maxDeltaCycle;
 
     void memStates();

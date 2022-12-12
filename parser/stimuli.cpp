@@ -14,7 +14,8 @@ NODE_CONN<LOGICSTATE>* STIMULI_HANDLER::getNodeConn(std::string netName)
 {
     STIMULI_MAP::iterator srchStimuli = this->stimulis.find(netName);
     if(srchStimuli == this->stimulis.end())
-        throw std::out_of_range("Net name not found in data base");
+        return &defNodeConn;
+        //throw std::out_of_range("Net name not found in data base");
 
     return &srchStimuli->second.first;
 }
@@ -23,15 +24,16 @@ void STIMULI_HANDLER::updateStimuliNodes(long timestamp)
 {
     for(STIMULI_MAP::iterator it = this->stimulis.begin(); it != stimulis.end(); ++it)
         for(std::list<STIMULI>::iterator lit = it->second.second.begin(); lit != it->second.second.end(); ++lit)
-            if(lit->timestamp > timestamp)
+            if(lit->timestamp >= timestamp)
             {
-                if(lit != it->second.second.begin())
-                {
+                if(lit->timestamp > timestamp && lit != it->second.second.begin())
                     lit--;
-                    it->second.first.state = lit->newState;
-                    for(std::list<NODE<LOGICSTATE>*>::iterator nodeIT = it->second.first.outputs.begin(); nodeIT != it->second.first.outputs.end(); ++nodeIT)
-                        static_cast<SIM_NODE*>(*nodeIT)->updateGate();
-                }
+                else if(lit->timestamp > timestamp)
+                    break;
+                
+                it->second.first.state = lit->newState;
+                for(std::list<NODE<LOGICSTATE>*>::iterator nodeIT = it->second.first.outputs.begin(); nodeIT != it->second.first.outputs.end(); ++nodeIT)
+                    static_cast<SIM_NODE*>(*nodeIT)->updateGate();
 
                 break;
             }

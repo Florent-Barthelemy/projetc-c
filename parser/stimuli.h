@@ -21,6 +21,7 @@ class STIMULI_HANDLER
 {
 private:
     STIMULI_MAP stimulis;
+    NODE_CONN<LOGICSTATE> defNodeConn = {X};
 
 public:
     NODE_CONN<LOGICSTATE>* addStimuli(std::string netName, std::list<STIMULI> stimulis);
