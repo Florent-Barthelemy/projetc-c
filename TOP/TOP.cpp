@@ -1,6 +1,9 @@
 #include "TOP.h"
+#include "../utils/systemMessages.h"
 
 using namespace std;
+
+SystemMessager topLogger("TOP");
 
 int main(int argc, char** argv)
 {
@@ -37,6 +40,7 @@ int main(int argc, char** argv)
             for(map<string, NODE_CONN<LOGICSTATE>*>::iterator inputsIT = circuitIT->second->getInputs().begin(); inputsIT != circuitIT->second->getInputs().end(); ++inputsIT)
             {
                 circuitIT->second->connIn(inputsIT->first, stimulis.getNodeConn(inputsIT->first));
+                
                 cout << inputsIT->first << "|";
             }
 

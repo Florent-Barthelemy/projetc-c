@@ -1,4 +1,7 @@
 #include "jsonparsing.h"
+#include "../../../utils/systemMessages.h"
+
+SystemMessager jsonLogger("JSON");
 
 enum STATE
 {
@@ -50,7 +53,7 @@ void parseJSON(std::fstream& stream, JSON& json)
         {
         case NEW_FIELD:
             if(llist.front().cnt != "{")
-                throw std::invalid_argument("ERR");
+                jsonLogger.SYNATX_ERROR<std::invalid_argument>("'{' token expected.", llist.front().line);
             typeFifo.push_back(STRUCT);
             nextState = FIELD_NAME;
             break;
@@ -62,7 +65,7 @@ void parseJSON(std::fstream& stream, JSON& json)
 
         case FIELD_SEPARATOR:
             if(llist.front().cnt != ":")
-                throw std::invalid_argument("ERR");
+                jsonLogger.SYNATX_ERROR<std::invalid_argument>("':' token expected.", llist.front().line);
             nextState = FIELD_VALUE;
             break;
 
@@ -102,16 +105,16 @@ void parseJSON(std::fstream& stream, JSON& json)
                     break; //break early, do not reduce current path
                 }
                 else
-                    throw std::invalid_argument("ERR");
+                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("Token expected after end of field.", llist.front().line);
             else if(typeFifo.back() == STRUCT)
                 if(llist.front().cnt == "}")
                     typeFifo.pop_back();
                 else if(llist.front().cnt == ",")
                     nextState = FIELD_NAME;
                 else
-                    throw std::invalid_argument("Missing separator");
+                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("Token expected after end of field.", llist.front().line);
             else
-                throw std::domain_error("Internal error.");
+                jsonLogger.ERROR<std::domain_error>("Internal error.");
             currentPath.pop_back();
 
             break;
@@ -123,6 +126,6 @@ void parseJSON(std::fstream& stream, JSON& json)
         llist.pop_front();
     } while (llist.size() > 0);
 
-    if(currentState != END_FIELD)
-        throw std::domain_error("Missing field ender");
+    if(currentState != END_FIELD || currentPath.size() > 0)
+        jsonLogger.SYNATX_ERROR<std::invalid_argument>("End of file arrived before all fields are closed.", llist.front().line);
 }

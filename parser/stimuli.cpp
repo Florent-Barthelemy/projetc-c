@@ -1,11 +1,14 @@
 #include "stimuli.h"
+#include "../utils/systemMessages.h"
+
+SystemMessager stimuliLogger("Stimuli");
 
 NODE_CONN<LOGICSTATE>* STIMULI_HANDLER::addStimuli(std::string netName, std::list<STIMULI> stimulis)
 {
     std::pair<STIMULI_MAP::iterator, bool> insertElement = this->stimulis.insert({netName, {{X, {}}, stimulis}});
 
     if(!insertElement.second)
-        throw std::out_of_range("Element already exists.");
+        stimuliLogger.ERROR<std::domain_error>("Stimuli \"" + netName + "\" already exists.");
 
     return &insertElement.first->second.first;
 }
@@ -14,8 +17,10 @@ NODE_CONN<LOGICSTATE>* STIMULI_HANDLER::getNodeConn(std::string netName)
 {
     STIMULI_MAP::iterator srchStimuli = this->stimulis.find(netName);
     if(srchStimuli == this->stimulis.end())
+    {
+        stimuliLogger.WARNING("Failed to find stimuli for input \"" + netName + "\". Connecting to Z state.");
         return &defNodeConn;
-        //throw std::out_of_range("Net name not found in data base");
+    }
 
     return &srchStimuli->second.first;
 }

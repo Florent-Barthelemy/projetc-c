@@ -1,4 +1,7 @@
 #include "wavedrom.h"
+#include "../../utils/systemMessages.h"
+
+SystemMessager wavedromLogger("Wavedrom");
 
 JSONFIELD* wavedromGenerator()
 {
@@ -19,11 +22,11 @@ void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
 
         JSONCONTAINER<std::string>* nameContainer = dynamic_cast<JSONCONTAINER<std::string>*>((*sigIT)->getField({"name"}));
         if(nameContainer == NULL)
-            throw std::domain_error("Container is not a string.");
+            wavedromLogger.ERROR<std::domain_error>("JSON container is not a string.");
 
         JSONCONTAINER<std::string>* valueContainer = dynamic_cast<JSONCONTAINER<std::string>*>((*sigIT)->getField({"wave"}));
         if(valueContainer == NULL)
-            throw std::domain_error("Container is not a string.");
+            wavedromLogger.ERROR<std::domain_error>("JSON container is not a string.");
 
         std::string waveStims = valueContainer->getValue();
 
@@ -79,7 +82,7 @@ void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
                 break;
 
             default:
-                throw std::invalid_argument("Unknown signal operator.");
+                wavedromLogger.ERROR<std::invalid_argument>("Wave token\'" + waveStims[i] + (std::string) "\' for signal \""  + nameContainer->getValue() + "\" is unknown."); //why is the cast needed? good question!
                 break;
             }
 

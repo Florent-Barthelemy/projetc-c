@@ -1,4 +1,7 @@
 #include "sim_node.h"
+#include "../utils/systemMessages.h"
+
+SystemMessager simLogger("SimCore");
 
 //default value
 unsigned short SIM_NODE::maxDeltaCycle = 10;
@@ -19,7 +22,7 @@ void SIM_NODE::updateGate()
     {
         this->deltaCycle++;
         if(this->deltaCycle >= SIM_NODE::maxDeltaCycle)
-            throw std::overflow_error("Max delta cycle reached.");
+            simLogger.ERROR<std::out_of_range>("Max delta cycle reached in module \"" + this->getName() + "\".");
 
         for(std::map<std::string, NODE_CONN<LOGICSTATE>>::iterator myOutputs = this->outputs.begin(); myOutputs != this->outputs.end(); myOutputs++)
         {
@@ -50,7 +53,7 @@ bool SIM_NODE::isSameState()
         std::map<std::string, LOGICSTATE>::iterator savedState = this->prevOutStates.find(myOutputs->first);
 
         if(savedState == this->prevOutStates.end())
-            throw std::overflow_error("Internal error.");
+            simLogger.ERROR<std::domain_error>("Internal error.");
 
         if(savedState->second != myOutputs->second.state)
             return false;
