@@ -62,7 +62,7 @@ public:
     /// improved flexibility on top level connectivity checks 
     /// @return map<nodeName, connector*>
     /// @author Florent B.
-    inline std::map<std::string, NODE_CONN<LOGICTYPE>*>* getInputs() const { return &this->inputs; }
+    inline std::map<std::string, NODE_CONN<LOGICTYPE>*>& getInputs() const { return this->inputs; }
 
     /**
     Gets output port pointer.
