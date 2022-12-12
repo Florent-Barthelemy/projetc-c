@@ -1,17 +1,37 @@
-
-
-digraph DFF_TB
+digraph NAND_MOD
 {
-	bitIn [label="INPUT"];
-	clock [label="INPUT"];
-	output [label="OUTPUT"];
+	A [label="INPUT"];
+	B [label="INPUT"];
+	S [label="OUTPUT"];
 
-	DFF0 [label="DFF"];
+	AND0 [label="AND"];
+	INV1 [label="INV"];
 
-	bitIn -> DFF0(IN1);
-	clock -> DFF0(Clk);
+	A -> AND0(IN1);
+	B -> AND0(IN2);
 
-	DFF0 -> output(IN1);
+	AND0 -> INV1(IN1);
+
+	INV1 -> S(IN1);
+}
+
+digraph NAND_MODULE
+{
+	using module NAND_MOD;
+
+	A [label="INPUT"];
+	B [label="INPUT"];
+	S [label="OUTPUT"];
+
+	AND0 [label="AND"];
+	INV1 [label="INV"];
+
+	A -> AND0(IN1);
+	B -> AND0(IN2);
+
+	AND0 -> INV1(IN1);
+
+	INV1 -> S(IN1);
 }
 
 
