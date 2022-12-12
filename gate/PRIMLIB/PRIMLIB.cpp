@@ -48,19 +48,19 @@ void NXOR::updateState()
 
 void DFF::updateState()
 {
-    if(getInConn("Clk")->state == H && this->prevClkState == L)
-        this->currState = getInConn("D")->state;
+    if(getInConn("CLK")->state == H && this->prevClkState == L)
+        this->currState = getInConn("IN1")->state;
 
-    this->prevClkState = getInConn("Clk")->state;
+    this->prevClkState = getInConn("IN1")->state;
 
-    getOutConn("Q")->state = this->currState;
+    getOutConn("OUT1")->state = this->currState;
 }
 
 void DLATCH::updateState()
 {
-    if(getInConn("Clk")->state == H )
-        this->currState = getInConn("D")->state;
+    if(getInConn("CLK")->state == H )
+        this->currState = getInConn("IN1")->state;
         
-    getOutConn("Q")->state = this->currState;
+    getOutConn("OUT1")->state = this->currState;
 }
 
