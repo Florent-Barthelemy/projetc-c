@@ -22,6 +22,7 @@ int parser_tb()
 	
 	SystemMessager::setTrapCallbackForMessage(_ERROR, TRAPS::__TRAP__ERROR);
 	SystemMessager::setTrapCallbackForMessage(_SYNTAX_ERR, TRAPS::__TRAP__ERROR);
+	SystemMessager::setTrapCallbackForMessage(_WARN, TRAPS::__TRAP__WARN);
 	SystemMessager::setTrapCallbackForMessage(_UNIMP, TRAPS::__TRAP__UNIMP);
 
 
@@ -97,6 +98,8 @@ int parser_tb()
 	SIM_NODE::registerType("XOR", xorCreator);
 	SIM_NODE::registerType("NXOR", nxorCreator);
 	SIM_NODE::registerType("INPUT", buffCreator);
+	SIM_NODE::registerType("DFF", dffCreator);
+	SIM_NODE::registerType("DLATCH", dlatchCreator);
 
 	SIM_NODE::setMaxDelta(100);
 
@@ -110,26 +113,42 @@ int parser_tb()
 	map<string, Module*>* builtSystemModule = lmBuilder.buildLinkedModule(&circuitsList);
 
 		
-    NODE_CONN<LOGICSTATE> testConn1 = {X, {}};
-    NODE_CONN<LOGICSTATE> testConn2 = {X, {}};
+    NODE_CONN<LOGICSTATE> bitIn = {X, {}};
+    NODE_CONN<LOGICSTATE> clock = {X, {}};
 
-	map<string, Module*>::iterator it = builtSystemModule->find("NAND_MODULE");
+	map<string, Module*>::iterator it = builtSystemModule->find("DFF_TB");
+	if(it == builtSystemModule->end())
+		messager.ERROR<ios::failure>("Cicruit do not exist");
 	
 	
-	
-	it->second->connIn("A", &testConn1);
-	it->second->connIn("B", &testConn2);
+	it->second->connIn("bitIn", &bitIn);
+	it->second->connIn("clock", &clock);
 
 	//Check if the module is properly connected :
 	it->second->checkConnectivity_IO();
 
 
-	testConn1.state = L;
-	testConn2.state = H;
+	bitIn.state = L;
+	clock.state = L;
+
+	it->second->updateGate();
+
+	bitIn.state = H;
+	clock.state = L;
+
+	it->second->updateGate();
+
+	bitIn.state = H;
+	clock.state = H;
+
+	it->second->updateGate();
+
+	bitIn.state = H;
+	clock.state = L;
 
 	it->second->updateGate();
 	
-	cout << "OUTPUT : " << it->second->getOutConn("S")->state << endl;
+	cout << "OUTPUT : " << it->second->getOutConn("output")->state << endl;
 
 	return 0;
 

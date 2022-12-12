@@ -39,3 +39,13 @@ SIM_NODE* buffCreator(INIT_PARAM params)
 {
     return new BUFF(params.nodeName);
 }
+
+SIM_NODE* dffCreator(INIT_PARAM params)
+{
+    return new DFF(params.nodeName);
+}
+
+SIM_NODE* dlatchCreator(INIT_PARAM params)
+{
+    return new DLATCH(params.nodeName);
+}
