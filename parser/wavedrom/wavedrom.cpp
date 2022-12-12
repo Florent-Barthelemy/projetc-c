@@ -18,7 +18,7 @@ void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
     for(std::vector<JSONFIELD*>::iterator sigIT = signals.begin(); sigIT != signals.end(); ++sigIT)
     {
         long timestamp = 0;
-        std::list<STIMULI> newStimulis;
+        std::list<TIMED_SIG> newStimulis;
 
         JSONCONTAINER<std::string>* nameContainer = dynamic_cast<JSONCONTAINER<std::string>*>((*sigIT)->getField({"name"}));
         if(nameContainer == NULL)
@@ -52,7 +52,7 @@ void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
                 newStimulis.push_back({timestamp, L});
                 int iP;
                 for(iP = 1; iP + i < waveStims.size() && waveStims[iP + i] == '.'; iP++)
-                    newStimulis.push_back({timestamp + iP, !newStimulis.back().newState});
+                    newStimulis.push_back({timestamp + iP, !newStimulis.back().state});
                 i += iP - 1;
                 break;
             }
@@ -63,7 +63,7 @@ void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
                 newStimulis.push_back({timestamp, H});
                 int iP;
                 for(iP = 1; iP + i < waveStims.size() && waveStims[iP + i] == '.'; iP++)
-                    newStimulis.push_back({timestamp + iP, !newStimulis.back().newState});
+                    newStimulis.push_back({timestamp + iP, !newStimulis.back().state});
                 i += iP - 1;
                 break;
             }
