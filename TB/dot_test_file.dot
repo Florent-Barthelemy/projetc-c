@@ -1,53 +1,18 @@
 
-digraph NAND_MODULE {
-	A [label="INPUT"];
-	B [label="INPUT"];
-	S [label="OUTPUT"];
 
-	AND1 [label="AND"];
-	INV1 [label="INV"];
+digraph DFF_TB
+{
+	bitIn [label="INPUT"];
+	clock [label="INPUT"];
+	output [label="OUTPUT"];
 
-	INV2 [label="INV"];
+	DFF0 [label="DFF"];
 
-	A -> AND1(IN1);
-	B -> AND1(IN2);
+	bitIn -> DFF0(IN1);
+	clock -> DFF0(Clk);
 
-
-
-
-
-	AND1 -> INV1(IN1);
-	
-
-	INV1 -> S(IN1);
-
+	DFF0 -> output(IN1);
 }
-
-
-digraph BONJOUR {
-	A [label="INPUT"];
-	B [label="INPUT"];
-	S [label="OUTPUT"];
-
-	AND1 [label="AND"];
-	INV1 [label="INV"];
-
-	GLACE_AU8CACA [label="INV"];
-
-	A -> AND1(IN1);
-	B -> AND1(IN2);
-
-
-
-
-
-	AND1 -> INV1(IN1);
-	
-
-	INV1 -> S(IN1);
-
-}
-
 
 
 
