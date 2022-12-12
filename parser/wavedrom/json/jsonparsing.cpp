@@ -52,6 +52,13 @@ void parseJSON(std::fstream& stream, JSON& json)
         switch (currentState)
         {
         case NEW_FIELD:
+            if(llist.front().cnt == "]" || llist.front().cnt == "}")
+            {
+                jsonLogger.WARNING("Expecting opening token but token '" + llist.front().cnt + "' line " + std::to_string(llist.front().line) + " found. Please consider removing previous opening token.");
+                nextState = END_FIELD;
+                goto end_field; //work around
+                break;
+            }
             if(llist.front().cnt != "{")
                 jsonLogger.SYNATX_ERROR<std::invalid_argument>("'{' token expected.", llist.front().line);
             typeFifo.push_back(STRUCT);
@@ -91,6 +98,9 @@ void parseJSON(std::fstream& stream, JSON& json)
             break;
 
         case END_FIELD: //stay in state to discard all END_FIELD tags
+            end_field:
+            if(typeFifo.size() == 0)
+                jsonLogger.SYNATX_ERROR<std::invalid_argument>("Opening token expected before closing token.", llist.front().line);
             if(typeFifo.back() == ARRAY)
                 if(llist.front().cnt == "]")
                 {
@@ -105,14 +115,14 @@ void parseJSON(std::fstream& stream, JSON& json)
                     break; //break early, do not reduce current path
                 }
                 else
-                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("Token expected after end of field.", llist.front().line);
+                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("End of field token expected.", llist.front().line);
             else if(typeFifo.back() == STRUCT)
                 if(llist.front().cnt == "}")
                     typeFifo.pop_back();
                 else if(llist.front().cnt == ",")
                     nextState = FIELD_NAME;
                 else
-                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("Token expected after end of field.", llist.front().line);
+                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("End of field token expected.", llist.front().line);
             else
                 jsonLogger.ERROR<std::domain_error>("Internal error.");
             currentPath.pop_back();
