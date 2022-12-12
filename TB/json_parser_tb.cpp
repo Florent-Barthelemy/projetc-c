@@ -4,23 +4,13 @@
 
 using namespace std;
 
-JSONFIELD* waveGenerator()
-{
-    return new STRUCT_FIELD({
-        { "name", new VALUE_FIELD(new JSONCONTAINER<std::string>("")) },
-        { "wave", new VALUE_FIELD(new JSONCONTAINER<std::string>("")) }
-    });
-}
-
 void json_parser_tb()
 {
     try
     {
-        STIMULI_HANDLER stims;
+        WAVEDROM_JSON(json);
 
-        JSON json = {{
-            "signal", new UNSIZED_ARRAY_FIELD(waveGenerator)
-        }};
+        STIMULI_HANDLER stims;
 
         fstream testFile("files\\json_test.json", ios_base::in);
 

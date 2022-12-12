@@ -1,5 +1,13 @@
 #include "wavedrom.h"
 
+JSONFIELD* wavedromGenerator()
+{
+    return new STRUCT_FIELD({
+        { "name", new VALUE_FIELD(new JSONCONTAINER<std::string>("")) },
+        { "wave", new VALUE_FIELD(new JSONCONTAINER<std::string>("")) }
+    });
+}
+
 void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
 {
     std::vector<JSONFIELD*> signals = json.getAsArray({"signal"});
