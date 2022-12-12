@@ -18,7 +18,7 @@ void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
     for(std::vector<JSONFIELD*>::iterator sigIT = signals.begin(); sigIT != signals.end(); ++sigIT)
     {
         long timestamp = 0;
-        std::list<TIMED_SIG> newStimulis;
+        std::vector<TIMED_SIG> newStimulis;
 
         JSONCONTAINER<std::string>* nameContainer = dynamic_cast<JSONCONTAINER<std::string>*>((*sigIT)->getField({"name"}));
         if(nameContainer == NULL)

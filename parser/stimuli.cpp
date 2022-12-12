@@ -3,7 +3,7 @@
 
 SystemMessager stimuliLogger("Stimuli");
 
-NODE_CONN<LOGICSTATE>* STIMULI_HANDLER::addStimuli(std::string netName, std::list<TIMED_SIG> stimulis)
+NODE_CONN<LOGICSTATE>* STIMULI_HANDLER::addStimuli(std::string netName, std::vector<TIMED_SIG> stimulis)
 {
     std::pair<STIMULI_MAP::iterator, bool> insertElement = this->stimulis.insert({netName, {{X, {}}, stimulis}});
 
@@ -28,7 +28,7 @@ NODE_CONN<LOGICSTATE>* STIMULI_HANDLER::getNodeConn(std::string netName)
 void STIMULI_HANDLER::updateStimuliNodes(long timestamp)
 {
     for(STIMULI_MAP::iterator it = this->stimulis.begin(); it != stimulis.end(); ++it)
-        for(std::list<TIMED_SIG>::iterator lit = it->second.second.begin(); lit != it->second.second.end(); ++lit)
+        for(std::vector<TIMED_SIG>::iterator lit = it->second.second.begin(); lit != it->second.second.end(); ++lit)
             if(lit->timestamp >= timestamp)
             {
                 if(lit->timestamp > timestamp && lit != it->second.second.begin())

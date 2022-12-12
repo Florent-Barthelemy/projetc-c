@@ -15,7 +15,9 @@ struct TIMED_SIG
     LOGICSTATE state;
 };
 
-typedef std::map<std::string, std::pair<NODE_CONN<LOGICSTATE>, std::list<TIMED_SIG>>> STIMULI_MAP;
+//STIMULIS
+
+typedef std::map<std::string, std::pair<NODE_CONN<LOGICSTATE>, std::vector<TIMED_SIG>>> STIMULI_MAP;
 
 class STIMULI_HANDLER
 {
@@ -24,10 +26,14 @@ private:
     NODE_CONN<LOGICSTATE> defNodeConn = {Z};
 
 public:
-    NODE_CONN<LOGICSTATE>* addStimuli(std::string netName, std::list<TIMED_SIG> stimulis);
+    NODE_CONN<LOGICSTATE>* addStimuli(std::string netName, std::vector<TIMED_SIG> stimulis);
     NODE_CONN<LOGICSTATE>* getNodeConn(std::string netName);
     void updateStimuliNodes(long timestamp);
 };
+
+//ACQUISITION
+
+typedef std::map<NODE_CONN<LOGICSTATE>*, std::pair<std::string, std::vector<TIMED_SIG>>> ACQUISITION_MAP;
 
 class ACQUISITION_HANDLER
 {
