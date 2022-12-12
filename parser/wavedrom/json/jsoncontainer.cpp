@@ -20,5 +20,5 @@ std::string JSONCONTAINER<int>::toString()
 
 void JSONCONTAINER<int>::fromString(std::string str)
 {
-    this->data = stringToInt(str); //TODO: implement
+    this->data = stringToInt(str);
 }
