@@ -1,5 +1,6 @@
 #include "../parser/wavedrom/json/jsonparsing.h"
 #include <iostream>
+#include "../parser/wavedrom/wavedrom.h"
 
 using namespace std;
 
@@ -15,6 +16,8 @@ void json_parser_tb()
 {
     try
     {
+        STIMULI_HANDLER stims;
+
         JSON json = {{
             "signal", new UNSIZED_ARRAY_FIELD(waveGenerator)
         }};
@@ -23,7 +26,7 @@ void json_parser_tb()
 
         parseJSON(testFile, json);
 
-        printf(json.toString().c_str());
+        generateStimuliData(json, stims);
     }
     catch(const std::exception& e)
     {

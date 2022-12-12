@@ -1,11 +1,6 @@
 #include "../gate/sim_node.h"
 #include "../gate/PRIMLIB/PRIMLIB.h"
 
-SIM_NODE* andCreator(INIT_PARAM params)
-{
-    return new AND("test");
-}
-
 void initialiser_tb()
 {
     SIM_NODE::registerType("AND", andCreator);

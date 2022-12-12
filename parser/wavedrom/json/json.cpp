@@ -143,7 +143,17 @@ JSONPARSER* STRUCT_FIELD::getField(JSONPATH path)
 
 std::vector<JSONFIELD*> STRUCT_FIELD::getAsArray(JSONPATH path)
 {
-    throw std::domain_error("Not implemented right now.");
+    if(path.size() == 0)
+        throw std::domain_error("Cannot get struct as array.");
+
+    std::map<std::string, JSONFIELD*>::iterator fieldFinder = fields.find(path.front());
+
+    if(fieldFinder == fields.end())
+        throw std::invalid_argument("Field not found.");
+
+    path.pop_front();
+
+    return fieldFinder->second->getAsArray(path);
 }
 
 std::string STRUCT_FIELD::toString()
