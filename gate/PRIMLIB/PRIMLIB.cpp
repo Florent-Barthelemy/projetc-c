@@ -51,7 +51,7 @@ void DFF::updateState()
     if(getInConn("CLK")->state == H && this->prevClkState == L)
         this->currState = getInConn("IN1")->state;
 
-    this->prevClkState = getInConn("IN1")->state;
+    this->prevClkState = getInConn("CLK")->state;
 
     getOutConn("OUT1")->state = this->currState;
 }
