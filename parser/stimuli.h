@@ -7,6 +7,7 @@
 #include "../graph/graph.h"
 #include <exception>
 #include <stdexcept>
+#include "../gate/sim_node.h"
 
 struct STIMULI
 {

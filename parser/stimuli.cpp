@@ -29,6 +29,8 @@ void STIMULI_HANDLER::updateStimuliNodes(long timestamp)
                 {
                     lit--;
                     it->second.first.state = lit->newState;
+                    for(std::list<NODE<LOGICSTATE>*>::iterator nodeIT = it->second.first.outputs.begin(); nodeIT != it->second.first.outputs.end(); ++nodeIT)
+                        static_cast<SIM_NODE*>(*nodeIT)->updateGate();
                 }
 
                 break;
