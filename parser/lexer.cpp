@@ -42,6 +42,9 @@ int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 					if (iResult == EOF)
 						return MISSING_END_SEPARATOR;
 
+					if(iResult == '\n')
+						lineNb++;
+
 					buf += iResult;
 				}
 
@@ -51,6 +54,9 @@ int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 
 					if (iResult == EOF)
 						return MISSING_END_SEPARATOR;
+
+					if(iResult == '\n')
+						lineNb++;
 
 					buf += iResult;
 				}
