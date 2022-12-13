@@ -17,6 +17,7 @@ int main(int argc, char** argv)
         map<string, Module*>* circuits;
         STIMULI_HANDLER stimulis;
         ACQUISITION_HANDLER acquisition;
+        WAVEDROM_JSON(jsonWavedrom);
 
         registerGates();
 
@@ -33,7 +34,6 @@ int main(int argc, char** argv)
         }
 
         {
-            WAVEDROM_JSON(jsonWavedrom);
             parseJSON(stimuliFile, jsonWavedrom);
             generateStimuliData(jsonWavedrom, stimulis);
         }
@@ -71,8 +71,8 @@ int main(int argc, char** argv)
                 }
         }
 
-        JSON acqJSON = generateWavedromSigs(acquisition);
-        writeJSON(acquisitionFile, acqJSON);
+        generateWavedromSigs(acquisition, jsonWavedrom);
+        writeJSON(acquisitionFile, jsonWavedrom);
     }
     catch(const std::exception& e)
     {

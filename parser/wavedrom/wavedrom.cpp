@@ -93,13 +93,12 @@ void generateStimuliData(JSON& json, STIMULI_HANDLER& handler)
     }
 }
 
-JSON generateWavedromSigs(ACQUISITION_HANDLER& handler)
+void generateWavedromSigs(ACQUISITION_HANDLER& handler, JSON& json)
 {
-    WAVEDROM_JSON(json);
     std::map<std::string, std::vector<TIMED_SIG>> sigs;
     handler.saveAcquisition(sigs);
 
-    int iJson = 0;
+    int iJson = json.getAsArray({"signal"}).size();
     std::string strJson;
     long currentTimestamp;
 
@@ -140,6 +139,4 @@ JSON generateWavedromSigs(ACQUISITION_HANDLER& handler)
         json.updateField({"signal", std::to_string(iJson), "name"}, sigIT->first);
         json.updateField({"signal", std::to_string(iJson), "wave"}, strJson);
     }
-
-    return json;
 }
