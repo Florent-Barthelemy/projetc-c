@@ -10,6 +10,8 @@
 #include <iostream>
 #include "lexer.h"
 #include "../utils/systemMessages.h"
+#include "../PRIMLIB/PRIMLIB.h"
+
 
 
 using namespace std;
@@ -30,6 +32,10 @@ struct circuitElementProperties
         
         inputID specifies which I/O 'pin' number is used
     */
+    int __DOT_COMPATIBLE_INPUT_COUNTER = 1;
+    bool __DOT_COMPATIBLE_MEM_CLOCK_CONNECTED = false;
+    bool __DOT_COMPATIBLE_MUX_SEL_CONNECTED = false;
+
     map<connectedElementName, portName> inputElements;
     map<connectedElementName, portName> outputElements; 
 };
@@ -83,7 +89,12 @@ enum class circuitBuildState : uint8_t
     /*Linkage port specifier state*/
     INPUT_PORT_SPECIFIER_BEGIN,
     LINK_ELEMENTS,
+    __DOT_COMPATIBLE_LINK_ELEMENTS,
+    __DOT_COMPATIBLE_ASSIGN_SEL_SIGNAL,
+    __DOT_COMPPATIBLE_LINK_SELECT_MUX2,
     INPUT_PORT_SPECIFIER_END,
+
+
 
     FEILD_INITIALIZER_END,
 
@@ -118,13 +129,18 @@ enum token
 enum elementFeildInitializer
 {
     LABEL,
+    __DOT_COMPATIBLE_CLOCK_LINK,
+    __DOT_COMPATIBLE_SEL_LINK
 };
 
 
 enum typeToken
 {
   INPUT,
-  OUTPUT
+  OUTPUT,
+  __DOT_COMPATIBLE_MUX2,
+  __DOT_COMPATIBLE_DFF,
+  __DOT_COMPATIBLE_DLATCH
 };
 /*  The circuitProperties struct defines the content
     of a circuit/module and the location of its inputs and outputs
@@ -150,6 +166,17 @@ typedef pair<circuitName, circuitProperties> circuit;
 //useful to avoid long definitions
 typedef map<circuitName, circuitProperties> objectBuilderOutput;
 
+struct objectBuilderConfig
+{
+    /// @brief deprecated variable
+    ///@deprecated
+    bool isVerbose;
+
+    /// @brief If the parser has to run in .dot compatibility mode
+    /// Some extra functions may not be usable.
+    bool isDotSyntaxCompatible;
+};
+
 class ObjectBuilder
 {
     /*
@@ -157,7 +184,7 @@ class ObjectBuilder
     
     */
     public:
-        ObjectBuilder(bool isVerbose) : verbose(isVerbose) { messager = new SystemMessager("ObjectBuilder"); }
+        ObjectBuilder(objectBuilderConfig conf) : verbose(conf.isDotSyntaxCompatible), config(conf) { messager = new SystemMessager("ObjectBuilder"); }
 
         void associateToken(token tk, string val) {
             tokens.insert(pair<token, string>(tk, val));
@@ -188,6 +215,8 @@ class ObjectBuilder
     
     private:
         SystemMessager* messager;
+
+        objectBuilderConfig config;
 
         map<circuitName, circuitProperties> builtCircuits;
 

@@ -1,39 +1,23 @@
-digraph NAND_MOD
-{
-	A [label="INPUT"];
-	B [label="INPUT"];
-	S [label="OUTPUT"];
-
-	AND0 [label="AND"];
-	INV1 [label="INV"];
-
-	A -> AND0(IN1);
-	B -> AND0(IN2);
-
-	AND0 -> INV1(IN1);
-
-	INV1 -> S(IN1);
-}
-
 digraph NAND_MODULE
 {
-	using module NAND_MOD;
-
 	A [label="INPUT"];
 	B [label="INPUT"];
+	C [label="INPUT"];
+	
 	S [label="OUTPUT"];
 
 	AND0 [label="AND"];
 	INV1 [label="INV"];
 
-	A -> AND0(IN1);
-	B -> AND0(IN2);
+	myMux2 [label="MUX" sel="A"];
+	
+	
 
-	AND0 -> INV1(IN1);
+	A -> AND0;
+	C -> AND0;
 
-	INV1 -> S(IN1);
+
+	AND0 -> INV1;
+
+	INV1 -> S;
 }
-
-
-
-

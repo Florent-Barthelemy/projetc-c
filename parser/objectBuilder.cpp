@@ -17,6 +17,9 @@ map<circuitName, circuitProperties> ObjectBuilder::buildCircuit(LEXED_LIST* lexe
     
     codeSectionCompleted = true;
 
+    if(config.isDotSyntaxCompatible)
+        messager->INFO("Compiler is running in dot compatible mode");
+
     for (LEXED_LIST::iterator it = lexedList->begin(); it != lexedList->end(); it++)
 	{
         iterateStateMachine(it); //iterating FSM with a new code element
@@ -104,6 +107,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
 
 
         case circuitBuildState::READ_NEW_CIRCUIT_HDL_LINE_FIRST :
+
             if(codeWord == tokens.at(END_LINE_OF_CODE))
                 //if line is empty
                 nextState = currentState;
@@ -191,11 +195,12 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             //else if it is a new element
             else if(codeWord == tokens.at(ELEMENT_PARAMS_BEGIN)) 
             {
-                currentCircuitElement = currentCircuitElement = *(new circuitElement);
+                currentCircuitElement = *(new circuitElement);
                 currentCircuitElement.first = codeWordStack.front();
 
                 messager->DEBUG("Created new element '" + currentCircuitElement.first + "' in '" + currentCircuit.first + "' circuit");
                 
+                codeWordStack.pop();
                 nextState = circuitBuildState::FEILD_INITIALIZER;
             }
 
@@ -215,11 +220,13 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
 
 
             //if the left element is neither declared in the current module or in a previously compiled one
-            if(currentCircuit.second.elements.find(codeWordStack.front()) == currentCircuit.second.elements.end()) 
+            circuitElementCollection::iterator leftElement = currentCircuit.second.elements.find(codeWordStack.front());
+            if(leftElement == currentCircuit.second.elements.end()) 
                 leftOpDoNotEsist = true;
 
             //if the right element is neither declared in the current module or in a previously compiled one
-            if(currentCircuit.second.elements.find(codeWord) == currentCircuit.second.elements.end())
+            circuitElementCollection::iterator rightElement = currentCircuit.second.elements.find(codeWord);
+            if(rightElement == currentCircuit.second.elements.end())
                 rightOpDoNotEsist = true;
             
             if(rightOpDoNotEsist)
@@ -232,21 +239,60 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                messager->SYNATX_ERROR<runtime_error>("LinkageError : can't link object '" + codeWordStack.front()
                               + "' with object '" +  codeWord + "', as '" + codeWordStack.front() + "' is not declared.",currentLine);
 
-            codeWordStack.push(codeWord);
-
             //at this point, codeWordStack contains the left operand and the right operand.
             //next step is to check for a port specifier.
 
-            nextState = circuitBuildState::INPUT_PORT_SPECIFIER_BEGIN;
+            //compatibility workaround
+            if(config.isDotSyntaxCompatible)
+            {
+                //if element is a latch
+                if(leftElement->second.elementType == typeTokens.at(__DOT_COMPATIBLE_DFF) ||
+                    leftElement->second.elementType == typeTokens.at(__DOT_COMPATIBLE_DLATCH))
+                {
+
+                }
+                else //element has n inputs, n outputs
+                {
+                    string rightElementPortName = "IN" + to_string(rightElement->second.__DOT_COMPATIBLE_INPUT_COUNTER);
+                    
+                    //adding link info
+                    auto rightInCheck = rightElement->second.inputElements.find(rightElementPortName);
+                    
+                    if(rightInCheck != rightElement->second.inputElements.end())
+                        messager->ERROR<runtime_error>("Error while trying to link '" + rightElement->first + "' port '"
+                                                            + rightElementPortName + "', with '" + leftElement->first + "' is already connected to it, HI-Z not supported in compatible mode");
+                    else
+                    {
+                        leftElement->second.outputElements.insert(pair<connectedElementName, portName>(rightElement->first,"OUT"));
+                        rightElement->second.inputElements.insert(pair<connectedElementName, portName>(leftElement->first, rightElementPortName));
+                        rightElement->second.__DOT_COMPATIBLE_INPUT_COUNTER++;
+                    }
+                }   
+                codeWordStack.pop();
+                nextState = circuitBuildState::LINE_OF_CODE_END;
+            }
+
+            else
+            {
+                //at this point, codeWordStack contains the left operand and the right operand.
+                //next step is to check for a port specifier.
+                codeWordStack.push(codeWord);
+                nextState = circuitBuildState::INPUT_PORT_SPECIFIER_BEGIN;
+            } 
             
         }
         break;
 
 
         case circuitBuildState::INPUT_PORT_SPECIFIER_BEGIN :
-            if(codeWord != tokens.at(INPUT_PORT_SPECIFIER_START))
+            if(codeWord == tokens.at(END_LINE_OF_CODE) && config.isDotSyntaxCompatible)
+                nextState = circuitBuildState::__DOT_COMPATIBLE_LINK_ELEMENTS;
+                
+
+            else if(codeWord != tokens.at(INPUT_PORT_SPECIFIER_START) && !config.isDotSyntaxCompatible)
                 messager->SYNATX_ERROR<runtime_error>("LinkageError : Missing port specifier after '" + codeWordStack.back() + "', got '" 
                                + codeWord + "' instead.",currentLine);
+            
             else
                 nextState = circuitBuildState::LINK_ELEMENTS;
         break;
@@ -339,11 +385,10 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             {
                 //here, codeWord is a valid and well syntaxed feild initializer,
                 //next step is to check if it has an assign sybol next
-                codeWordStack.pop();
+                //codeWordStack.pop();
                 codeWordStack.push(codeWord);
                 nextState = circuitBuildState::FEILD_INITIALIZER_ASSIGN;
             }
-
         break;
 
 
@@ -359,13 +404,40 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                     //if it is a label feild
                     if(codeWordStack.front() == elementFeildInitializers.at(LABEL)) 
                         nextState = circuitBuildState::SET_ELEMENT_LABEL;
+                    
+                    //if initializer is a select signal link and it is a mux (compat mode only)
+                    else if(codeWordStack.front() == elementFeildInitializers.at(__DOT_COMPATIBLE_SEL_LINK) &&
+                        currentCircuitElement.second.elementType == typeTokens.at(typeToken::__DOT_COMPATIBLE_MUX2) && config.isDotSyntaxCompatible)
+                        nextState = circuitBuildState::__DOT_COMPPATIBLE_LINK_SELECT_MUX2;
 
+                    
 
-                    //removing the initializer name from the stack,
-                    //it is not needed anymore.
-                    codeWordStack.pop();
                 }
 
+        break;
+
+        case circuitBuildState::__DOT_COMPPATIBLE_LINK_SELECT_MUX2:
+            if(currentCircuitElement.second.__DOT_COMPATIBLE_MUX_SEL_CONNECTED == true)
+                messager->SYNATX_ERROR<runtime_error>("Cannot add '" + elementFeildInitializers.at(__DOT_COMPATIBLE_SEL_LINK) 
+                                                + "' feild initializer to '" + currentCircuitElement.first + "' feild is already assigned", currentLine);
+            
+            else if(currentCircuit.second.elements.find(codeWord) == currentCircuit.second.elements.end())
+                messager->SYNATX_ERROR<runtime_error>("Can't link sel signal of MUX2 '" + currentCircuitElement.first + "' to '" + codeWord + "' as it is not declared.", currentLine);
+            
+            else
+            {
+                currentCircuit.second.inputElements.insert(*(new pair<connectedElementName, portName>(
+                        codeWord,
+                        
+                )));
+            }
+
+            //check if sel signal exists,
+            //it it exists, add sel signal with standard sel input.
+
+            //removing the initializer name from the stack,
+            //it is not needed anymore.
+            codeWordStack.pop();
         break;
 
         /* codeWord is the element name */
@@ -377,6 +449,10 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             {
                 //if the property has an unreserved name, assign 'type' property
                 currentCircuitElement.second.elementType = codeWord;
+
+                //removing the initializer name from the stack,
+                //it is not needed anymore.
+                codeWordStack.pop();
 
                 //Next property read
                 nextState = circuitBuildState::FEILD_INITIALIZER;
@@ -446,5 +522,7 @@ bool ObjectBuilder::isAnElementFeildInitializer(string s)
 
     return false;
 }
+
+
 
 

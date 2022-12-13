@@ -18,7 +18,7 @@ int parser_tb()
 	//instanciation of a messager for the test bench
 	SystemMessager messager("parser_tb");
 
-	SystemMessager::setShownMessages({_ALL});
+	SystemMessager::setShownMessages({_WARN, _ERROR, _UNIMP, _INFO, _ALL});
 	
 	SystemMessager::setTrapCallbackForMessage(_ERROR, TRAPS::__TRAP__ERROR);
 	SystemMessager::setTrapCallbackForMessage(_SYNTAX_ERR, TRAPS::__TRAP__ERROR);
@@ -29,7 +29,11 @@ int parser_tb()
 
 
 	//instanciation of the ObjectBuilder isVerbose = true
-	ObjectBuilder objBuilder(true);
+	auto objBuilderConfig = *(new objectBuilderConfig());
+	objBuilderConfig.isDotSyntaxCompatible = true;
+	objBuilderConfig.isVerbose = false;
+
+	ObjectBuilder objBuilder(objBuilderConfig);
 
 	LinkedModuleBuilderConfig lmBuilderConf;
 	lmBuilderConf.isVerbose = true;
@@ -89,6 +93,12 @@ int parser_tb()
 	objBuilder.associateTypeToken(typeToken::OUTPUT, "output");
 
 	objBuilder.associateElementFeild(elementFeildInitializer::LABEL, "label");
+	objBuilder.associateElementFeild(elementFeildInitializer::__DOT_COMPATIBLE_CLOCK_LINK, "clk");
+	objBuilder.associateElementFeild(elementFeildInitializer::__DOT_COMPATIBLE_SEL_LINK, "sel");
+	
+	objBuilder.associateTypeToken(typeToken::__DOT_COMPATIBLE_MUX2, "MUX");
+	objBuilder.associateTypeToken(typeToken::__DOT_COMPATIBLE_DFF, "DFF");
+	objBuilder.associateTypeToken(typeToken::__DOT_COMPATIBLE_DLATCH, "DLATCH");
 
 	SIM_NODE::registerType("INV", invCreator);
 	SIM_NODE::registerType("AND", andCreator);
@@ -128,8 +138,8 @@ int parser_tb()
 	//Check if the module is properly connected :
 	it->second->checkConnectivity_IO();
 
-	A.state = L;
-	B.state = L;
+	A.state = H;
+	B.state = H;
 
 
 	it->second->updateGate();
