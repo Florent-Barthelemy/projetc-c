@@ -61,3 +61,57 @@ bool SIM_NODE::isSameState()
 
     return true;
 }
+
+void SIM_NODE::connIn(std::string portName, NODE_CONN<LOGICSTATE>* conn)
+{
+    try
+    {
+        NODE::connIn(portName, conn);
+    }
+    catch(const std::exception& e)
+    {
+        simLogger.ERROR<std::invalid_argument>("Input port \"" + portName + "\" does not exist for module \"" + this->getName() + "\"");
+    }
+}
+
+NODE_CONN<LOGICSTATE>* SIM_NODE::getInConn(std::string portName)
+{
+    try
+    {
+        return NODE::getInConn(portName);
+    }
+    catch(const std::exception& e)
+    {
+        simLogger.ERROR<std::invalid_argument>("Input port \"" + portName + "\" does not exist for module \"" + this->getName() + "\"");
+    }
+
+    return NULL;
+}
+
+NODE_CONN<LOGICSTATE>* SIM_NODE::getOutConn(std::string portName)
+{
+    try
+    {
+        return NODE::getOutConn(portName);
+    }
+    catch(const std::exception& e)
+    {
+        simLogger.ERROR<std::invalid_argument>("Output port \"" + portName + "\" does not exist for module \"" + this->getName() + "\"");
+    }
+
+    return NULL;
+}
+
+SIM_NODE* SIM_NODE::createNewObject(std::string identifier, INIT_PARAM param)
+{
+    try
+    {
+        return TYPE_REG::createNewObject(identifier, param);
+    }
+    catch(const std::exception& e)
+    {
+        simLogger.ERROR<std::invalid_argument>("Gate \"" + identifier + "\" is not a valid gate type.");
+    }
+
+    return NULL;
+}

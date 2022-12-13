@@ -17,7 +17,7 @@ struct INIT_PARAM
     
 };
 
-class SIM_NODE : public NODE<LOGICSTATE>, public NAMEDOBJ, public TYPE_REG<SIM_NODE, INIT_PARAM, std::string>
+class SIM_NODE : private NODE<LOGICSTATE>, public NAMEDOBJ, public TYPE_REG<SIM_NODE, INIT_PARAM, std::string>
 {
 private:
     std::map<std::string, LOGICSTATE> prevOutStates;
@@ -52,6 +52,36 @@ public:
     \param max: max delta cycle to set.
     */
     static inline void setMaxDelta(unsigned short max) { SIM_NODE::maxDeltaCycle = max; }
+
+    /**
+    Connect input net to NODE_CONN.
+    \param portName: name of the port to connect.
+    \param conn: NODE_CONN to connect.
+    \throw std::invalid_argument when port does not exist.
+    */
+    void connIn(std::string portName, NODE_CONN<LOGICSTATE>* conn);
+
+    /**
+    Gets input port pointer.
+    \param portName: name of the port to get.
+    \return NODE_CONN driving this net.
+    \throw std::invalid_argument when port does not exist.
+    */
+    NODE_CONN<LOGICSTATE>* getInConn(std::string portName);
+
+    /**
+    Gets output port pointer.
+    \param portName: name of the port to get.
+    \return NODE_CONN driving this net.
+    \throw std::invalid_argument when port does not exist.
+    */
+    NODE_CONN<LOGICSTATE>* getOutConn(std::string portName);
+
+    inline std::map<std::string, NODE_CONN<LOGICSTATE>*>& getInputs() { return NODE::getInputs(); }
+
+    inline std::map<std::string, NODE_CONN<LOGICSTATE>>& getOutputs() { return NODE::getOutputs(); }
+
+    static SIM_NODE* createNewObject(std::string identifier, INIT_PARAM param);
 };
 
 #endif
