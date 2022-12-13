@@ -64,3 +64,19 @@ void DLATCH::updateState()
     getOutConn("OUT1")->state = this->currState;
 }
 
+void MUX::updateState()
+{
+    switch (getInConn("SEL")->state)
+    {
+    case L:
+        getOutConn("OUT1")->state = getInConn("IN1")->state;
+        break;
+    case H:
+        getOutConn("OUT1")->state = getInConn("IN2")->state;
+        break;
+
+    default:
+        getOutConn("OUT1")->state = X;
+        break;
+    }
+}
