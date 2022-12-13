@@ -255,12 +255,15 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                 {
                     string rightElementPortName = "IN" + to_string(rightElement->second.__DOT_COMPATIBLE_INPUT_COUNTER);
                     
+
                     //adding link info
-                    auto rightInCheck = rightElement->second.inputElements.find(rightElementPortName);
+                    auto rightInCheck = rightElement->second.inputElements.find(leftElement->first);
+                    
                     
                     if(rightInCheck != rightElement->second.inputElements.end())
-                        messager->ERROR<runtime_error>("Error while trying to link '" + rightElement->first + "' port '"
-                                                            + rightElementPortName + "', with '" + leftElement->first + "' is already connected to it, HI-Z not supported in compatible mode");
+                        messager->SYNATX_ERROR<runtime_error>("Output of '" + leftElement->first + "' is already connected to '" + currentCircuitElement.first, currentLine);
+                    
+                    
                     else
                     {
                         leftElement->second.outputElements.insert(pair<connectedElementName, portName>(rightElement->first,"OUT"));
@@ -337,7 +340,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                     messager->WARNING("Output of '" + leftOperand + "' connected with output of '" + inputEltIt->first
                     + "' in module '" + currentCircuit.first + "'.");
 
-                    messager->UNIMPLEMENTED("Hi-Z logic is not implemented ~yet~ :=)");
+                    messager->UNIMPLEMENTED("Hi-Z logic is not implemented");
                 }
             }
 
@@ -426,12 +429,13 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             
             else
             {
-                currentCircuit.second.inputElements.insert(*(new pair<connectedElementName, portName>(
+                
+                currentCircuitElement.second.inputElements.insert(*(new pair<connectedElementName, portName>(
                         codeWord,
                         PRIMGATE_STD_MUX2_IN_SEL
                 )));
 
-                currentCircuitElement.second.__DOT_COMPATIBLE_MUX_SEL_CONNECTED == true;
+                currentCircuitElement.second.__DOT_COMPATIBLE_MUX_SEL_CONNECTED = true;
             }
 
             //check if sel signal exists,
@@ -440,6 +444,9 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             //removing the initializer name from the stack,
             //it is not needed anymore.
             codeWordStack.pop();
+
+            //next property read
+            nextState = circuitBuildState::FEILD_INITIALIZER;
         break;
 
         /* codeWord is the element name */

@@ -9,9 +9,13 @@ digraph NAND_MODULE
 	AND0 [label="AND"];
 	INV1 [label="INV"];
 
-	myMux2 [label="MUX" sel="A"];
+	myMux2 [label="MUX" sel="C"];
 	
 	
+	A -> myMux2;
+	B -> myMux2;
+
+	INV1 -> myMux2;
 
 	A -> AND0;
 	C -> AND0;
