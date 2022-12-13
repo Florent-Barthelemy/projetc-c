@@ -10,7 +10,7 @@
 #include <iostream>
 #include "lexer.h"
 #include "../utils/systemMessages.h"
-#include "../PRIMLIB/PRIMLIB.h"
+#include "../gate/PRIMLIB/PRIMLIB.h"
 
 
 
