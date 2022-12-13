@@ -428,8 +428,10 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             {
                 currentCircuit.second.inputElements.insert(*(new pair<connectedElementName, portName>(
                         codeWord,
-                        
+                        PRIMGATE_MUX2_SEL
                 )));
+
+                currentCircuitElement.second.__DOT_COMPATIBLE_MUX_SEL_CONNECTED == true;
             }
 
             //check if sel signal exists,

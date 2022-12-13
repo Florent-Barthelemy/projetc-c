@@ -65,7 +65,7 @@ SIM_NODE* dffCreator(INIT_PARAM params);
 SIM_NODE* dlatchCreator(INIT_PARAM params);
 
 //memories
-#define PRIMGATE_MUX2_SEL {"OUT1"}
+#define PRIMGATE_MUX2_SEL {"SEL"}
 
 
 #endif
