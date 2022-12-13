@@ -17,7 +17,7 @@ struct INIT_PARAM
     
 };
 
-class SIM_NODE : private NODE<LOGICSTATE>, public NAMEDOBJ, public TYPE_REG<SIM_NODE, INIT_PARAM, std::string>
+class SIM_NODE : public NODE<LOGICSTATE>, public NAMEDOBJ, public TYPE_REG<SIM_NODE, INIT_PARAM, std::string>
 {
 private:
     std::map<std::string, LOGICSTATE> prevOutStates;
