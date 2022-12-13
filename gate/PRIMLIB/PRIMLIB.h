@@ -64,9 +64,12 @@ class DLATCH : public SIM_NODE {
 SIM_NODE* dffCreator(INIT_PARAM params);
 SIM_NODE* dlatchCreator(INIT_PARAM params);
 
-//memories
+//muxs
 #define PRIMGATE_STD_MUX2_IN_SEL "SEL"
 #define PRIMGATE_STD_MUX2_IN {"IN1", "IN2", PRIMGATE_STD_MUX2_IN_SEL}
 
+CREATE_PRIMGATE(MUX, PRIMGATE_STD_MUX2_IN, PRIMGATE_STD_OUT);
+
+SIM_NODE* muxCreator(INIT_PARAM params);
 
 #endif

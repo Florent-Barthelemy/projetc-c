@@ -49,3 +49,8 @@ SIM_NODE* dlatchCreator(INIT_PARAM params)
 {
     return new DLATCH(params.nodeName);
 }
+
+SIM_NODE* muxCreator(INIT_PARAM params)
+{
+    return new MUX(params.nodeName);
+}
