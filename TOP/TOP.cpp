@@ -22,7 +22,8 @@ int main(int argc, char** argv)
         registerGates();
 
         {
-            ObjectBuilder modulesBuilder(true);
+            objectBuilderConfig c;
+            ObjectBuilder modulesBuilder(c);
             LEXED_LIST lex;
             DELIM_MAP delims;
 
