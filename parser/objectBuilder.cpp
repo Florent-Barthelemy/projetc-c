@@ -245,14 +245,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             //compatibility workaround
             if(config.isDotSyntaxCompatible)
             {
-                //if element is a latch
-                if(leftElement->second.elementType == typeTokens.at(__DOT_COMPATIBLE_DFF) ||
-                    leftElement->second.elementType == typeTokens.at(__DOT_COMPATIBLE_DLATCH))
-                {
 
-                }
-                else //element has n inputs, n outputs
-                {
                     string rightElementPortName = "IN" + to_string(rightElement->second.__DOT_COMPATIBLE_INPUT_COUNTER);
                     
 
@@ -261,8 +254,13 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                     
                     
                     if(rightInCheck != rightElement->second.inputElements.end())
-                        messager->SYNATX_ERROR<runtime_error>("Output of '" + leftElement->first + "' is already connected to '" + currentCircuitElement.first, currentLine);
+                        messager->SYNATX_ERROR<runtime_error>("Output of '" + leftElement->first + "' is already connected.", currentLine);
                     
+                    else if(rightElement->second.elementType == typeTokens.at(OUTPUT) &&
+                            rightElement->second.__DOT_COMPATIBLE_INPUT_COUNTER > 1)
+                            messager->WARNING("Output port '" + rightElement->first + "' of module '" 
+                                    + currentCircuit.first + "' has '" + to_string(rightElement->second.__DOT_COMPATIBLE_INPUT_COUNTER)
+                                    + "' internal circuit outputs connected to it. default output taken in sim will be the first one.");
                     
                     else
                     {
@@ -270,7 +268,7 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                         rightElement->second.inputElements.insert(pair<connectedElementName, portName>(leftElement->first, rightElementPortName));
                         rightElement->second.__DOT_COMPATIBLE_INPUT_COUNTER++;
                     }
-                }   
+ 
                 codeWordStack.pop();
                 nextState = circuitBuildState::LINE_OF_CODE_END;
             }
@@ -409,18 +407,62 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                         nextState = circuitBuildState::SET_ELEMENT_LABEL;
                     
                     //if initializer is a select signal link and it is a mux (compat mode only)
-                    else if(codeWordStack.front() == elementFeildInitializers.at(__DOT_COMPATIBLE_SEL_LINK) &&
-                        currentCircuitElement.second.elementType == typeTokens.at(typeToken::__DOT_COMPATIBLE_MUX2) && config.isDotSyntaxCompatible)
+                    else if(codeWordStack.front() == elementFeildInitializers.at(__DOT_COMPATIBLE_SEL_LINK) && config.isDotSyntaxCompatible)
                         nextState = circuitBuildState::__DOT_COMPPATIBLE_LINK_SELECT_MUX2;
 
-                    
+                    else if(codeWordStack.front() == elementFeildInitializers.at(__DOT_COMPATIBLE_CLOCK_LINK) && config.isDotSyntaxCompatible)
+                        nextState = circuitBuildState::__DOT_COMPPATIBLE_LINK_CLOCK_DFF;
+
+                    else
+                        nextState = circuitBuildState::LINE_OF_CODE_END;
 
                 }
 
         break;
 
+        case circuitBuildState::__DOT_COMPPATIBLE_LINK_CLOCK_DFF:
+             if(currentCircuitElement.second.elementType != typeTokens.at(typeToken::__DOT_COMPATIBLE_DFF)
+                && currentCircuitElement.second.elementType != typeTokens.at(typeToken::__DOT_COMPATIBLE_DLATCH))
+                messager->SYNATX_ERROR<runtime_error>("Unkown initializer '" + codeWordStack.front() + "' for '" + currentCircuitElement.first + "' which is of element type '" 
+                                                        + currentCircuitElement.second.elementType + "'. Trying to instanciate '" + typeTokens.at(__DOT_COMPATIBLE_DFF) 
+                                                        + "' or '"+ typeTokens.at(typeToken::__DOT_COMPATIBLE_DLATCH) +"' type?", currentLine);
+
+            else if(currentCircuitElement.second.__DOT_COMPATIBLE_MEM_CLOCK_CONNECTED == true)
+                messager->SYNATX_ERROR<runtime_error>("Cannot add '" + elementFeildInitializers.at(__DOT_COMPATIBLE_CLOCK_LINK) 
+                                                + "' feild initializer to '" + currentCircuitElement.first + "' feild is already assigned", currentLine);
+            
+            else if(currentCircuit.second.elements.find(codeWord) == currentCircuit.second.elements.end())
+                messager->SYNATX_ERROR<runtime_error>("Can't link sel signal of DFF/DLATCH '" + currentCircuitElement.first + "' to '" + codeWord + "' as it is not declared.", currentLine);
+
+            else
+            {
+                
+                currentCircuitElement.second.inputElements.insert(*(new pair<connectedElementName, portName>(
+                        codeWord,
+                        PRIMGATE_FF__IN_CLK
+                )));
+
+                currentCircuitElement.second.__DOT_COMPATIBLE_MEM_CLOCK_CONNECTED = true;
+            }
+
+            //check if sel signal exists,
+            //it it exists, add sel signal with standard sel input.
+
+            //removing the initializer name from the stack,
+            //it is not needed anymore.
+            codeWordStack.pop();
+
+            //next property read
+            nextState = circuitBuildState::FEILD_INITIALIZER;
+        break;
+
         case circuitBuildState::__DOT_COMPPATIBLE_LINK_SELECT_MUX2:
-            if(currentCircuitElement.second.__DOT_COMPATIBLE_MUX_SEL_CONNECTED == true)
+            
+             if(currentCircuitElement.second.elementType != typeTokens.at(typeToken::__DOT_COMPATIBLE_MUX2))
+                messager->SYNATX_ERROR<runtime_error>("Unkown initializer '" + codeWordStack.front() + "' for '" + currentCircuitElement.first + "' which is of element type '" 
+                                                        + currentCircuitElement.second.elementType + "'. Trying to instanciate '" + typeTokens.at(__DOT_COMPATIBLE_MUX2) + "' type?", currentLine);
+
+            else if(currentCircuitElement.second.__DOT_COMPATIBLE_MUX_SEL_CONNECTED == true)
                 messager->SYNATX_ERROR<runtime_error>("Cannot add '" + elementFeildInitializers.at(__DOT_COMPATIBLE_SEL_LINK) 
                                                 + "' feild initializer to '" + currentCircuitElement.first + "' feild is already assigned", currentLine);
             

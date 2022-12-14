@@ -2,26 +2,19 @@ digraph NAND_MODULE
 {
 	A [label="INPUT"];
 	B [label="INPUT"];
-	C [label="INPUT"];
+
 	
 	S [label="OUTPUT"];
 
-	AND0 [label="AND"];
-	INV1 [label="INV"];
+	CLOCK [label="INPUT"];
+	myCoolDLATCH [label="DLATCH" clk="CLOCK"];
 
-	myMux2 [label="MUX" sel="C"];
+	INV0 [label="INV"];
+
+
+	INV0 -> S;
+	A -> myCoolDLATCH;
+	myCoolDLATCH -> S;
 	
-	
-	A -> myMux2;
-	B -> myMux2;
 
-	INV1 -> myMux2;
-
-	A -> AND0;
-	C -> AND0;
-
-
-	AND0 -> INV1;
-
-	INV1 -> S;
 }

@@ -48,12 +48,22 @@ void NXOR::updateState()
 
 void DFF::updateState()
 {
-    if(getInConn("CLK")->state == H && this->prevClkState == L)
-        this->currState = getInConn("IN1")->state;
+    NODE_CONN<LOGICSTATE>* clkConnPtr = getInConn("CLK");
+    
+    if(clkConnPtr == 0x00)
+    {
+        getOutConn("OUT1")->state = X;
+        return;
+    }
+    else
+    {
+        if(clkConnPtr->state == H && this->prevClkState == L)
+            this->currState = getInConn("IN1")->state;
 
-    this->prevClkState = getInConn("CLK")->state;
+        this->prevClkState = clkConnPtr->state;
 
-    getOutConn("OUT1")->state = this->currState;
+        getOutConn("OUT1")->state = this->currState;
+    }
 }
 
 void DLATCH::updateState()
@@ -66,7 +76,17 @@ void DLATCH::updateState()
 
 void MUX::updateState()
 {
-    switch (getInConn("SEL")->state)
+    NODE_CONN<LOGICSTATE>* selConnPtr = getInConn("SEL");
+    
+    /// quick fix for existing but 
+    /// unconnected SEL signal inducing a seg fault
+    if(selConnPtr == 0x00)
+    {
+        getOutConn("OUT1")->state = X;
+        return;
+    }
+        
+    switch (selConnPtr->state)
     {
     case L:
         getOutConn("OUT1")->state = getInConn("IN1")->state;
