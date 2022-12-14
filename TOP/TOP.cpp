@@ -8,9 +8,9 @@ SystemMessager topLogger("TOP");
 int main(int argc, char** argv)
 {
     int iResult;
-    fstream HDLFile("src/circuit.dot", ios_base::in);
-    fstream stimuliFile("src/stimulis.json", ios_base::in);
-    fstream acquisitionFile("src/acquisition.json", ios_base::out | ios_base::trunc);
+    fstream HDLFile("../TOP/src/circuit.dot", ios_base::in);
+    fstream stimuliFile("../TOP/src/stimulis.json", ios_base::in);
+    fstream acquisitionFile("../TOP/src/acquisition.json", ios_base::out | ios_base::trunc);
 
     try
     {
@@ -22,7 +22,7 @@ int main(int argc, char** argv)
         registerGates();
 
         {
-            ObjectBuilder modulesBuilder(true);
+            ObjectBuilder modulesBuilder({true, false});
             LEXED_LIST lex;
             DELIM_MAP delims;
 
@@ -73,6 +73,11 @@ int main(int argc, char** argv)
 
         generateWavedromSigs(acquisition, jsonWavedrom);
         writeJSON(acquisitionFile, jsonWavedrom);
+
+        QApplication a(argc, argv);
+        MainWindow window(acquisition, stimulis);
+        window.show();
+        a.exec();
     }
     catch(const std::exception& e)
     {
@@ -82,4 +87,6 @@ int main(int argc, char** argv)
     HDLFile.close();
     stimuliFile.close();
     acquisitionFile.close();
+
+    return 0;
 }
