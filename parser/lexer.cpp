@@ -1,4 +1,4 @@
-#include "Lexer.h"
+#include "lexer.h"
 
 int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 {
