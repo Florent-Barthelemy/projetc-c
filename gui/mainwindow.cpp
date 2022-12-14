@@ -14,7 +14,7 @@ MainWindow::MainWindow(ACQUISITION_HANDLER& acq, STIMULI_HANDLER& stim, QWidget 
     std::map<std::string, std::vector<TIMED_SIG>> rawAcq;
     acq.saveAcquisition(rawAcq);
 
-    for(auto stimIT = stim.stimulis.begin(); stimIT != stim.stimulis.end(); ++stimIT)
+    for(auto stimIT = stim.getStimulis().begin(); stimIT != stim.getStimulis().end(); ++stimIT)
     {
         displayWave(stimIT->second.second, QString(stimIT->first.c_str()), 4);
     }

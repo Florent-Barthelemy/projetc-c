@@ -29,6 +29,8 @@ public:
     NODE_CONN<LOGICSTATE>* addStimuli(std::string netName, std::vector<TIMED_SIG> stimulis);
     NODE_CONN<LOGICSTATE>* getNodeConn(std::string netName);
     void updateStimuliNodes(long timestamp);
+    inline STIMULI_MAP& getStimulis() { return stimulis; }
+
 };
 
 //ACQUISITION
@@ -44,6 +46,7 @@ public:
     void registerAcquisition(NODE_CONN<LOGICSTATE>* conn, std::string name);
     void acquire(long timestamp);
     void saveAcquisition(std::map<std::string, std::vector<TIMED_SIG>>& container);
+    inline ACQUISITION_MAP& getAcquisition() { return this->acquisitions; }
 
 };
 
