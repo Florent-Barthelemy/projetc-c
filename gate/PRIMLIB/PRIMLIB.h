@@ -39,7 +39,8 @@ SIM_NODE* nxorCreator(INIT_PARAM params);
 SIM_NODE* buffCreator(INIT_PARAM params);
 
 //memories
-#define PRIMGATE_FF_IN {"IN1", "CLK"}
+#define PRIMGATE_FF__IN_CLK "CLK"
+#define PRIMGATE_FF_IN {"IN1", PRIMGATE_FF__IN_CLK}
 #define PRIMGATE_FF_OUT {"OUT1"}
 
 class DFF : public SIM_NODE {

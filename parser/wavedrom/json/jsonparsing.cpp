@@ -54,7 +54,7 @@ void parseJSON(std::fstream& stream, JSON& json)
         case NEW_FIELD:
             if(llist.front().cnt == "]" || llist.front().cnt == "}")
             {
-                jsonLogger.WARNING("Expecting opening token but token '" + llist.front().cnt + "' line " + std::to_string(llist.front().line) + " found. Please consider removing previous opening token.");
+                jsonLogger.WARNING("Expecting opening token but token '" + llist.front().cnt + "' line " + std::to_string(llist.front().line) + " found. Please consider removing previous separator token.");
                 nextState = END_FIELD;
                 goto end_field; //work around
                 break;
@@ -115,14 +115,14 @@ void parseJSON(std::fstream& stream, JSON& json)
                     break; //break early, do not reduce current path
                 }
                 else
-                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("End of field token expected.", llist.front().line);
+                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("End of array field token expected.", llist.front().line);
             else if(typeFifo.back() == STRUCT)
                 if(llist.front().cnt == "}")
                     typeFifo.pop_back();
                 else if(llist.front().cnt == ",")
                     nextState = FIELD_NAME;
                 else
-                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("End of field token expected.", llist.front().line);
+                    jsonLogger.SYNATX_ERROR<std::invalid_argument>("End of struct field token expected.", llist.front().line);
             else
                 jsonLogger.ERROR<std::domain_error>("Internal error.");
             currentPath.pop_back();

@@ -78,8 +78,6 @@ class Module : public SIM_NODE
                 //outputs copy
                 this->getOutConn(*outputIt)->state = this->internalModuleOutputs.find(*outputIt)->second->state;
             }
-
-
         }
 
        
