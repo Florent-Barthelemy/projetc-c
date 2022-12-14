@@ -89,14 +89,14 @@ int parser_tb()
 	objBuilder.associateToken(token::USING, "using");
 	objBuilder.associateToken(token::MODULE, "module");
 	
-	objBuilder.associateTypeToken(typeToken::INPUT, "input");
-	objBuilder.associateTypeToken(typeToken::OUTPUT, "output");
+	objBuilder.associateTypeToken(typeToken::INPUT, "INPUT");
+	objBuilder.associateTypeToken(typeToken::OUTPUT, "OUTPUT");
 
 	objBuilder.associateElementFeild(elementFeildInitializer::LABEL, "label");
 	objBuilder.associateElementFeild(elementFeildInitializer::__DOT_COMPATIBLE_CLOCK_LINK, "clk");
 	objBuilder.associateElementFeild(elementFeildInitializer::__DOT_COMPATIBLE_SEL_LINK, "sel");
 	
-	objBuilder.associateTypeToken(typeToken::__DOT_COMPATIBLE_MUX2, "MUX");
+	objBuilder.associateTypeToken(typeToken::__DOT_COMPATIBLE_MUX2, "MUX2");
 	objBuilder.associateTypeToken(typeToken::__DOT_COMPATIBLE_DFF, "DFF");
 	objBuilder.associateTypeToken(typeToken::__DOT_COMPATIBLE_DLATCH, "DLATCH");
 
@@ -110,6 +110,7 @@ int parser_tb()
 	SIM_NODE::registerType("INPUT", buffCreator);
 	SIM_NODE::registerType("DFF", dffCreator);
 	SIM_NODE::registerType("DLATCH", dlatchCreator);
+	SIM_NODE::registerType("MUX2", muxCreator);
 
 	SIM_NODE::setMaxDelta(100);
 
@@ -126,6 +127,8 @@ int parser_tb()
     NODE_CONN<LOGICSTATE> A = {X, {}};
     NODE_CONN<LOGICSTATE> B = {X, {}};
 
+	NODE_CONN<LOGICSTATE> CLK = {X, {}};
+
 	map<string, Module*>::iterator it = builtSystemModule->find("NAND_MODULE");
 	if(it == builtSystemModule->end())
 		messager.ERROR<ios::failure>("Cicruit do not exist");
@@ -133,13 +136,29 @@ int parser_tb()
 	
 	it->second->connIn("A", &A);
 	it->second->connIn("B", &B);
+	it->second->connIn("CLOCK", &CLK);
 
 
 	//Check if the module is properly connected :
 	it->second->checkConnectivity_IO();
 
+	A.state = L;
+	CLK.state = L;
+
+	cout << "OUTPUT : " << it->second->getOutConn("S")->state << endl;
+	it->second->updateGate();
+
 	A.state = H;
-	B.state = H;
+	CLK.state = H;
+
+
+	it->second->updateGate();
+
+	
+	cout << "OUTPUT : " << it->second->getOutConn("S")->state << endl;
+
+	A.state = L;
+	CLK.state = L;
 
 
 	it->second->updateGate();
