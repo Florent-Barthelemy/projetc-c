@@ -9,6 +9,8 @@
 #include <iostream>
 #include "../parser/lexer.h"
 #include "../parser/wavedrom/wavedrom.h"
+#include "../gui/mainwindow.h"
+#include <QApplication>
 
 int main(int argc, char** argv);
 

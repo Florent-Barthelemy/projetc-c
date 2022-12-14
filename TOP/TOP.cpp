@@ -40,35 +40,16 @@ int main(int argc, char** argv)
 
         for(map<string, Module*>::iterator circuitIT = circuits->begin(); circuitIT != circuits->end(); ++circuitIT)
             for(map<string, NODE_CONN<LOGICSTATE>*>::iterator inputsIT = circuitIT->second->getInputs().begin(); inputsIT != circuitIT->second->getInputs().end(); ++inputsIT)
-            {
                 circuitIT->second->connIn(inputsIT->first, stimulis.getNodeConn(inputsIT->first));
-                cout << inputsIT->first << "|";
-            }
 
         for(map<string, Module*>::iterator circuitIT = circuits->begin(); circuitIT != circuits->end(); ++circuitIT)
             for(map<string, NODE_CONN<LOGICSTATE>>::iterator outputsIT = circuitIT->second->getOutputs().begin(); outputsIT != circuitIT->second->getOutputs().end(); ++outputsIT)
-            {
                 acquisition.registerAcquisition(&outputsIT->second, outputsIT->first);
-                cout << outputsIT->first << "|";
-            }
 
         for(long iTimestamp = 0; iTimestamp < 4; iTimestamp++)
         {
             stimulis.updateStimuliNodes(iTimestamp);
             acquisition.acquire(iTimestamp);
-            cout << endl;
-
-            for(map<string, Module*>::iterator circuitIT = circuits->begin(); circuitIT != circuits->end(); ++circuitIT)
-                for(map<string, NODE_CONN<LOGICSTATE>*>::iterator inputsIT = circuitIT->second->getInputs().begin(); inputsIT != circuitIT->second->getInputs().end(); ++inputsIT)
-                {
-                    cout << inputsIT->second->state << "|";
-                }
-
-            for(map<string, Module*>::iterator circuitIT = circuits->begin(); circuitIT != circuits->end(); ++circuitIT)
-                for(map<string, NODE_CONN<LOGICSTATE>>::iterator outputsIT = circuitIT->second->getOutputs().begin(); outputsIT != circuitIT->second->getOutputs().end(); ++outputsIT)
-                {
-                    cout << outputsIT->second.state << "|";
-                }
         }
 
         generateWavedromSigs(acquisition, jsonWavedrom);
