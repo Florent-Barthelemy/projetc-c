@@ -29,10 +29,14 @@ public:
     ~MainWindow();
     void displayWave(std::vector<TIMED_SIG> sigs, QString name, long toTimestamp = 0);
     void clearWindow();
+    void resizeEvent(QResizeEvent* event);
+    void updateStimulis();
 
 private:
     Ui::MainWindow *ui;
     QGraphicsScene waveScene;
+    ACQUISITION_HANDLER& acq;
+    STIMULI_HANDLER& stim;
     long lineLength = 100;
     long waveOff = WAVE_TOP_OFFSET;
 
