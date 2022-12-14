@@ -1,8 +1,9 @@
-#include "Lexer.h"
+#include "lexer.h"
 
 int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 {
 	unsigned long lineNb = 1;
+	bool inComment = false;
 
 	if (!file.is_open())
 		return LEX_FILE_NOT_OPENED;
@@ -25,49 +26,68 @@ int lex(std::fstream& file, DELIM_MAP& delimiters, LEXED_LIST& lexListContainer)
 
 		if (delimSearch != delimiters.end())
 		{
-			if ((buf.size() - delimSearch->first.size()) > 0)
+			if(delimSearch->second == START_COMMENT)
+				inComment = true;
+			
+			if(delimSearch->second == END_COMMENT)
+			{
+				inComment = false;
+				buf = "";
+			}
+			else if(!inComment)
+			{
+				if ((buf.size() - delimSearch->first.size()) > 0)
 				lexListContainer.push_back({buf.substr(0, buf.size() - delimSearch->first.size()), lineNb});
 
-			if (delimSearch->second == SAVE)
-				lexListContainer.push_back({delimSearch->first, lineNb});
+				if (delimSearch->second == SAVE)
+					lexListContainer.push_back({delimSearch->first, lineNb});
 
-			buf = ""; //reset buffer
+				buf = ""; //reset buffer
 
-			if (delimSearch->second == TOGGLE_STRING)
-			{
-				while (buf.size() < delimSearch->first.size())
+				if (delimSearch->second == LINE_COMMENT)
 				{
-					iResult = file.get();
-
-					if (iResult == EOF)
-						return MISSING_END_SEPARATOR;
-
-					if(iResult == '\n')
-						lineNb++;
-
-					buf += iResult;
+					do
+					{
+						iResult = file.get();
+					} while (iResult != EOF && iResult != '\n');
+					
 				}
-
-				while (buf.substr(buf.size() - delimSearch->first.size()) != delimSearch->first)
+				else if (delimSearch->second == TOGGLE_STRING)
 				{
-					iResult = file.get();
+					while (buf.size() < delimSearch->first.size())
+					{
+						iResult = file.get();
 
-					if (iResult == EOF)
-						return MISSING_END_SEPARATOR;
+						if (iResult == EOF)
+							return MISSING_END_SEPARATOR;
 
-					if(iResult == '\n')
-						lineNb++;
+						if(iResult == '\n')
+							lineNb++;
 
-					buf += iResult;
+						buf += iResult;
+					}
+
+					while (buf.substr(buf.size() - delimSearch->first.size()) != delimSearch->first)
+					{
+						iResult = file.get();
+
+						if (iResult == EOF)
+							return MISSING_END_SEPARATOR;
+
+						if(iResult == '\n')
+							lineNb++;
+
+						buf += iResult;
+					}
+					buf = buf.substr(0, buf.size() - 1);
 				}
-				buf = buf.substr(0, buf.size() - 1);
 			}
 		}
 
 		iResult = file.get();
 	}
 
-	if(buf.size())
+	if(buf.size() && !inComment)
 		lexListContainer.push_back({buf, lineNb});
 
 	return LEX_SUCCESS;
