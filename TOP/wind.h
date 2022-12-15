@@ -18,26 +18,32 @@ typedef std::function<void(char**, int)> argHandler;
 
 struct ARG
 {
-    string fullArgName;
-    string aliasName;
-    int argArgsCount;
+    private:
+        int uid;
+        static int uidCounter;
+    public:
+        string fullArgName;
+        string aliasName;
+        int argArgsCount;
 
-    argHandler handler;
-    
-    string helpMessage;
+        argHandler handler;
+        
+        string helpMessage;
+
+        static void resetUidCounter() { uidCounter = 0; };
+        void setup() {uid = uidCounter++;}
+        const int getUid() const { return uid; }
 };
 
-bool operator<(const ARG& leftArg, const ARG& rightArg)
+bool operator<(const ARG& o1, const ARG& o2)
 {
-    return &leftArg.handler < &rightArg.handler;
+    return o1.fullArgName < o2.fullArgName;
 }
 
-bool operator>(const ARG& leftArg, const ARG& rightArg)
+bool operator>(const ARG& o1, const ARG& o2)
 {
-    return &leftArg.handler > &rightArg.handler;
+    return o1.fullArgName > o2.fullArgName;
 }
-
-
 
 struct argRegister
 {
@@ -115,19 +121,20 @@ struct simParams
 //===================== ARGS HANDLER DEFINITIONS =====================//
 
 void showHelpMessage(argRegister reg)
-{   
-    std::set<ARG> shownArgsSet;
-    cout << "wind [args]\n";
+{
+    std::set<ARG> args;
+
+    cout << "\n wind [args]\n";
     for(auto argIt = reg.getMap().begin(); argIt != reg.getMap().end(); ++argIt)
     {
-        shownArgsSet.insert(argIt->second);
+        args.insert(argIt->second);
     } 
 
-    for(auto argIt = shownArgsSet.begin(); argIt != shownArgsSet.end(); ++argIt)
+    for (auto setIT = args.begin(); setIT != args.end(); ++setIT)
     {
-            cout << "\t" << argIt->fullArgName << ", " << argIt->aliasName
-                << " " << argIt->helpMessage << endl; 
-    } 
+        cout << "\t" << setIT->fullArgName << ", " << setIT->aliasName
+             << ": " << setIT->helpMessage << endl;
+    }
 }
 
 void setSimParamsDefaultValues()

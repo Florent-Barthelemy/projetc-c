@@ -27,7 +27,6 @@ int main(int argc, char** argv)
         dotCompatibleArg.aliasName = "-dc";
         dotCompatibleArg.argArgsCount = 0;
         dotCompatibleArg.handler = dotCompatArgHandler;
-        dotCompatibleArg.helpMessage = "activate compatibility mode for dot files.";
         argMapper.addArg(&dotCompatibleArg);
 
         ARG dotFileArg;
@@ -35,7 +34,6 @@ int main(int argc, char** argv)
         dotFileArg.aliasName = "-f";
         dotFileArg.argArgsCount = 1;
         dotFileArg.handler = dotFileArgHandler;
-        dotFileArg.helpMessage = "dot circuit description to simulate.";
         argMapper.addArg(&dotFileArg);
 
         ARG stimuliFileArg;
@@ -43,7 +41,6 @@ int main(int argc, char** argv)
         stimuliFileArg.aliasName = "-s";
         stimuliFileArg.argArgsCount = 1;
         stimuliFileArg.handler = stimuliFileArgHandler;
-        stimuliFileArg.helpMessage = "wavedrom stimuli file name.";
         argMapper.addArg(&stimuliFileArg);
 
         ARG compilationName;
@@ -51,7 +48,6 @@ int main(int argc, char** argv)
         compilationName.aliasName = "-chn";
         compilationName.argArgsCount = 1;
         compilationName.handler = compilationNameArgHandler;
-        compilationName.helpMessage = "sets the compilation name.";
         argMapper.addArg(&compilationName);
 
         ARG deltaCyclesArg;
@@ -59,7 +55,6 @@ int main(int argc, char** argv)
         deltaCyclesArg.aliasName = "-dlt";
         deltaCyclesArg.argArgsCount = 1;
         deltaCyclesArg.handler = deltaCyclesArgHandler;
-        deltaCyclesArg.helpMessage = "sets the maximum delta cycle. Default is 10.";
         argMapper.addArg(&deltaCyclesArg);
 
         ARG wavedromFileNameOutArg;
@@ -67,15 +62,13 @@ int main(int argc, char** argv)
         wavedromFileNameOutArg.aliasName = "-o";
         wavedromFileNameOutArg.argArgsCount = 1;
         wavedromFileNameOutArg.handler = wavedromFileNameOutArgHandler;
-        wavedromFileNameOutArg.helpMessage = "output wavedrom file name.";
         argMapper.addArg(&wavedromFileNameOutArg);
 
         ARG showGuiSimResultsArg{
             "--gui",
             "-g",
             0,
-            showGuiSimResultsArgHandler,
-            "starts the wave GUI"
+            showGuiSimResultsArgHandler
         };
         argMapper.addArg(&showGuiSimResultsArg);
         
@@ -83,8 +76,7 @@ int main(int argc, char** argv)
             "--compilationOnly",
             "-c",
             0,
-            compilationOnlyArgHandler,
-            "compiles without simulating."
+            compilationOnlyArgHandler
         };
         argMapper.addArg(&compilationOnlyArg);
         
@@ -92,8 +84,7 @@ int main(int argc, char** argv)
             "--timestamp",
             "-t",
             1,
-            simulationTimeArgHandler,
-            "sets the simulation time. Default is 20."
+            simulationTimeArgHandler
         };
         argMapper.addArg(&timestampArg);
 
@@ -101,8 +92,7 @@ int main(int argc, char** argv)
             "--help",
             "-h",
             0,
-            helpArgHandler,
-            "displays this help message."
+            helpArgHandler
         };
         argMapper.addArg(&helpArg);
 
