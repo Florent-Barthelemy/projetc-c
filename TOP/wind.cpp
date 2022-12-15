@@ -8,7 +8,6 @@ string simParams::dotFileToParse;
 string simParams::outputWavedromFileName;
 bool simParams::compilOnly = false;
 unsigned long simParams::maxSimulationTimestamp = 20;
-bool simParams::withGUI = false;
 
 int main(int argc, char** argv)
 {
