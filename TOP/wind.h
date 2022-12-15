@@ -9,6 +9,7 @@
 #include <functional>
 #include <stdexcept>
 #include "help.h"
+#include <set>
 
 int main(int argc, char** argv);
 
@@ -25,6 +26,16 @@ struct ARG
     
     string helpMessage;
 };
+
+bool operator<(const ARG& o1, const ARG& o2)
+{
+    return o1.fullArgName < o2.fullArgName;
+}
+
+bool operator>(const ARG& o1, const ARG& o2)
+{
+    return o1.fullArgName > o2.fullArgName;
+}
 
 struct argRegister
 {
@@ -102,13 +113,20 @@ struct simParams
 //===================== ARGS HANDLER DEFINITIONS =====================//
 
 void showHelpMessage(argRegister reg)
-{   
+{
+    std::set<ARG> args;
+
     cout << "\n wind [args]\n";
     for(auto argIt = reg.getMap().begin(); argIt != reg.getMap().end(); ++argIt)
     {
-        cout << "\t" << argIt->second.fullArgName << ", " << argIt->second.aliasName
-             << " " << argIt->second.helpMessage << endl;
+        args.insert(argIt->second);
     } 
+
+    for (auto setIT = args.begin(); setIT != args.end(); ++setIT)
+    {
+        cout << "\t" << setIT->fullArgName << ", " << setIT->aliasName
+             << ": " << setIT->helpMessage << endl;
+    }
 }
 
 void setSimParamsDefaultValues()
