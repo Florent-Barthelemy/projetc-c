@@ -22,6 +22,8 @@ struct ARG
     int argArgsCount;
 
     argHandler handler;
+    
+    string helpMessage;
 };
 
 struct argRegister
@@ -145,5 +147,6 @@ void compilationOnlyArgHandler(char** argArgs, int argArgsCount)
 {
     simParams::compilOnly = true;
 }
+
 
 #endif

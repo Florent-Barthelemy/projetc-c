@@ -6,9 +6,10 @@
                     "\t--help, -h: displays this help message.\n" \
                     "\t--outputFile, -o: output wavedrom file name.\n" \
                     "\t--setDeltaCycles, -dlt: sets the maximum delta cycle. Default is 10.\n" \
-                    "\t--compilHistoryName, -chn: stimuli file name.\n" \
+                    "\t--compilHistoryName, -chn: sets the compilation name.\n" \
                     "\t--sti, -s: stimuli file name.\n" \
                     "\t--HDLfile, -f: circuit(s) to simulate.\n" \
-                    "\t--dotCompatible, -dc: activate compatibility mode for dot files.\n"
+                    "\t--dotCompatible, -dc: activate compatibility mode for dot files.\n" \
+                    "\t--compilationOnly, -c: compiles without simulating.\n"
 
 #endif

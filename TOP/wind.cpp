@@ -46,7 +46,7 @@ int main(int argc, char** argv)
         compilationName.fullArgName = "--compilHistoryName";
         compilationName.aliasName = "-chn";
         compilationName.argArgsCount = 1;
-        compilationName.handler = stimuliFileArgHandler;
+        compilationName.handler = compilationNameArgHandler;
         argMapper.addArg(&compilationName);
 
         ARG deltaCyclesArg;
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
         wavedromFileNameOutArg.argArgsCount = 1;
         wavedromFileNameOutArg.handler = wavedromFileNameOutArgHandler;
         argMapper.addArg(&wavedromFileNameOutArg);
-
+        
         ARG compilationOnlyArg{
             "--compilationOnly",
             "-c",
