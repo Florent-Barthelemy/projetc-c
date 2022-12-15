@@ -72,8 +72,11 @@ map<linkedModuleName, Module*>* DotLogicParser::dot2simLogic(std::string mainFil
     LEXED_LIST lexedList;
 
 	auto code = lex(tb0, delims, lexedList);
-	if(code != LEX_SUCCESS)
-		messager->ERROR<ios_base::failure>("Lexer error, probable bad syntax");
+	
+	if(code == LEX_FILE_NOT_OPENED)
+		messager->ERROR<ios_base::failure>("File '" + mainFileName + "'do not exist");
+	else if(code == MISSING_END_SEPARATOR)
+		messager->ERROR<ios_base::failure>("Missing end separator, probable bad syntax");
 
 
     objectBuilderOutput circuitsList = builder->buildCircuit(&lexedList);

@@ -14,7 +14,10 @@ enum DELIM_MODE : uint8_t
 {
 	SAVE,
 	DISCARD,
-	TOGGLE_STRING
+	TOGGLE_STRING,
+	LINE_COMMENT,
+	START_COMMENT,
+	END_COMMENT
 };
 
 namespace std {
