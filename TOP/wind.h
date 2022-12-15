@@ -90,6 +90,8 @@ struct simParams
         static bool compilOnly;
 
         static unsigned long maxSimulationTimestamp;
+
+        static bool helpShown;
 };
 
 //===================== ARGS HANDLER DEFINITIONS =====================//
@@ -136,7 +138,7 @@ void simulationTimeArgHandler(char** argArgs, int argArgsCount)
 
 void helpArgHandler(char** argArgs, int argArgsCount)
 {
-    std::cout << HELP_MSG << std::endl;
+    simParams::helpShown = true;
 }
 
 void compilationOnlyArgHandler(char** argArgs, int argArgsCount)

@@ -8,6 +8,7 @@ string simParams::dotFileToParse;
 string simParams::outputWavedromFileName;
 bool simParams::compilOnly = false;
 unsigned long simParams::maxSimulationTimestamp = 20;
+bool simParams::helpShown = false;
 
 int main(int argc, char** argv)
 {
@@ -96,15 +97,21 @@ int main(int argc, char** argv)
             ARG argToCall = *argMapper.getArgAt(argv[i]);
             
             argToCall.handler(argv+(i+1), argToCall.argArgsCount);
+            
 
             i += argToCall.argArgsCount;
         }
 
-        
-
+        if(simParams::helpShown || argc <= 0)
+        {
+            std::cout << HELP_MSG << std::endl;
+            return 0;
+        }
+            
 
         DotLogicParser parser(simParams::dotLogParserConfig);
         dotLogicParserOutput circuits = parser.dot2simLogic(simParams::dotFileToParse, simParams::compilationName);
+    
     
         if(simParams::compilOnly)
             return 0;
