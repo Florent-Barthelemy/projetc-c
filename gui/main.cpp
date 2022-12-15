@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
     for(int i = 1; i < argc; i++)
     {
-        fstream stimuliFile(argv[i], ios_base::in);
+        std::fstream stimuliFile(argv[i], std::ios_base::in);
         parseJSON(stimuliFile, jsonWavedrom);
         generateStimuliData(jsonWavedrom, stimulis);
     }

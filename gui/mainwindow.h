@@ -5,7 +5,9 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <vector>
-#include "../TOP/TOP.h"
+#include "../parser/stimuli.h"
+#include "../parser/wavedrom/wavedrom.h"
+#include <fstream>
 
 #define WAVE_TOP_OFFSET 0
 #define WAVE_LEFT_OFFSET 0
