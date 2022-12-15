@@ -21,6 +21,9 @@ DotLogicParser::DotLogicParser(DotLogicParserConfig conf)
 	ADD_DELIM(delims, "->", SAVE);
 	ADD_DELIM(delims, "(", SAVE);
 	ADD_DELIM(delims, ")", SAVE);
+	ADD_DELIM(delims, "//", LINE_COMMENT);
+	ADD_DELIM(delims, "/*", START_COMMENT);
+	ADD_DELIM(delims, "*/", END_COMMENT);
 
     /* =========== ObjectBuilder Setup ===========*/
  	//delimiters & keywords param config for ObjectBuilder
@@ -52,16 +55,35 @@ DotLogicParser::DotLogicParser(DotLogicParserConfig conf)
 	builder->associateTypeToken(typeToken::__DOT_COMPATIBLE_DLATCH, "DLATCH");
 
     /* =========== Registering Types creators ===========*/
-    SIM_NODE::registerType("INV", invCreator);
+    SIM_NODE::registerType("NOT", invCreator);
+
+	SIM_NODE::registerType("AND2", andCreator);
 	SIM_NODE::registerType("AND", andCreator);
-	SIM_NODE::registerType("NAND", nandCreator);
+
+	SIM_NODE::registerType("NAND2", nandCreator);
+	SIM_NODE::registerType("NAND2", nandCreator);
+
 	SIM_NODE::registerType("OR", orCreator);
+	SIM_NODE::registerType("OR2", orCreator);
+
 	SIM_NODE::registerType("NOR", norCreator);
+	SIM_NODE::registerType("NOR2", norCreator);
+
 	SIM_NODE::registerType("XOR", xorCreator);
-	SIM_NODE::registerType("NXOR", nxorCreator);
+	SIM_NODE::registerType("XOR2", xorCreator);
+
+	SIM_NODE::registerType("XNOR", nxorCreator);
+	SIM_NODE::registerType("XNOR2", nxorCreator);
+	
 	SIM_NODE::registerType("INPUT", buffCreator);
+
+	SIM_NODE::registerType("FF", dffCreator);
 	SIM_NODE::registerType("DFF", dffCreator);
+
+	SIM_NODE::registerType("LATCH", dlatchCreator);
 	SIM_NODE::registerType("DLATCH", dlatchCreator);
+
+	SIM_NODE::registerType("MUX", muxCreator);
 	SIM_NODE::registerType("MUX2", muxCreator);
 }
 

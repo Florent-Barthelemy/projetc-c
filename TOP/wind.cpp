@@ -6,7 +6,7 @@ string simParams::compilationName = "comp_0";
 string simParams::stimuliFile;
 string simParams::dotFileToParse;
 string simParams::outputWavedromFileName;
-
+bool simParams::compilOnly = false;
 unsigned long simParams::maxSimulationTimestamp = 20;
 bool simParams::withGUI = false;
 
@@ -15,6 +15,8 @@ int main(int argc, char** argv)
     try
     {
         SystemMessager messager("windSim");
+
+
         argRegister argMapper;
 
         argMapper.linkMessager(&messager);
@@ -60,6 +62,14 @@ int main(int argc, char** argv)
         wavedromFileNameOutArg.argArgsCount = 1;
         wavedromFileNameOutArg.handler = wavedromFileNameOutArgHandler;
         argMapper.addArg(&wavedromFileNameOutArg);
+
+        ARG compilationOnlyArg{
+            "--compilationOnly",
+            "-c",
+            0,
+            compilationOnlyArgHandler
+        };
+        argMapper.addArg(&compilationOnlyArg);
         
         ARG timestampArg = {
             "--timestamp",
@@ -97,6 +107,9 @@ int main(int argc, char** argv)
         DotLogicParser parser(simParams::dotLogParserConfig);
         dotLogicParserOutput circuits = parser.dot2simLogic(simParams::dotFileToParse, simParams::compilationName);
     
+        if(simParams::compilOnly)
+            return 0;
+
         STIMULI_HANDLER stimulis;
         ACQUISITION_HANDLER acquisition;
         WAVEDROM_JSON(jsonWavedrom);
@@ -140,18 +153,10 @@ int main(int argc, char** argv)
 
         acquisitionFile.close();
         stimuliFile.close();
-
-        if(simParams::withGUI)
-        {
-            QApplication a(argc, argv);
-            MainWindow window(acquisition, stimulis);
-            window.show();
-            a.exec();
-        }
     }
     catch(const std::exception& e)
     {
-        
+        return -1;
     }
 
     return 0;

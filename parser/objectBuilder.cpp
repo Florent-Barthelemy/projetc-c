@@ -270,7 +270,10 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
                     }
  
                 codeWordStack.pop();
-                nextState = circuitBuildState::LINE_OF_CODE_END;
+                codeWordStack.push(rightElement->first);
+
+                nextState = circuitBuildState::__DOT_COMPPATIBLE_LINK_CHAIN_TEST;
+                //nextState = circuitBuildState::LINE_OF_CODE_END;
             }
 
             else
@@ -282,6 +285,25 @@ void ObjectBuilder::iterateStateMachine(LEXED_LIST::iterator it)
             } 
             
         }
+        break;
+
+        case circuitBuildState::__DOT_COMPPATIBLE_LINK_CHAIN_TEST:
+            if(codeWord == tokens.at(END_LINE_OF_CODE))
+            {
+                codeWordStack.pop();
+                nextState = circuitBuildState::READ_NEW_CIRCUIT_HDL_LINE_FIRST;
+            }
+                    
+            else if(codeWord == tokens.at(LINKAGE))
+            {
+                
+                nextState = circuitBuildState::ADD_ELEMENT_LINK_INFO;
+            }
+                
+                    
+            else
+                messager->SYNATX_ERROR<runtime_error>("Unexpected token '" + codeWord + "'.", currentLine);
+                
         break;
 
 

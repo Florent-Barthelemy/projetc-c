@@ -5,12 +5,10 @@
 #include "../parser/dotLogicParser.h"
 #include "../utils/systemMessages.h"
 #include "../parser/wavedrom/wavedrom.h"
+#include "../utils/traps.h"
 #include <functional>
 #include <stdexcept>
 #include "help.h"
-#include "../gui/mainwindow.h"
-#include <QApplication>
-
 
 int main(int argc, char** argv);
 
@@ -89,6 +87,8 @@ struct simParams
 
         static string outputWavedromFileName;
 
+        static bool compilOnly;
+
         static unsigned long maxSimulationTimestamp;
         static bool withGUI;
 };
@@ -143,6 +143,11 @@ void helpArgHandler(char** argArgs, int argArgsCount)
 void guiArgHandler(char** argArgs, int argArgsCount)
 {
     simParams::withGUI = true;
+}
+
+void compilationOnlyArgHandler(char** argArgs, int argArgsCount)
+{
+    simParams::compilOnly = true;
 }
 
 #endif

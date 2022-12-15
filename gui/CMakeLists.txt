@@ -18,25 +18,15 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
         ../parser/lexer.cpp
-        ../parser/linkedModuleBuilder.cpp
-        ../parser/objectBuilder.cpp
-        ../parser/module.cpp
         ../parser/wavedrom/json/jsoncontainer.cpp
         ../parser/wavedrom/json/json.cpp
         ../parser/wavedrom/json/jsonparsing.cpp
         ../parser/wavedrom/wavedrom.cpp
         ../parser/stimuli.cpp
-        ../parser/dotLogicParser.cpp
         ../gate/sim_node.cpp
         ../gate/logic.cpp
-        ../gate/PRIMLIB/PRIMLIB.cpp
-        ../gate/PRIMLIB/PRIMLIB_CREATORS.cpp
-        ../utils/namedObj.cpp
         ../utils/systemMessages.cpp
-        ../utils/traps.cpp
-        ../TOP/builder.cpp
-        ../TOP/registerGate.cpp
-        ../TOP/wind.cpp
+        ../utils/namedObj.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

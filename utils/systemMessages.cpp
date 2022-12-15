@@ -61,7 +61,7 @@ void SystemMessager::UNIMPLEMENTED(std::string msg)
     }
 
     callTrap(_UNIMP);
-    throw new std::runtime_error(msg);
+    throw std::runtime_error(msg);
 }
 
 
