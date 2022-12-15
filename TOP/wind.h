@@ -7,6 +7,7 @@
 #include "../parser/wavedrom/wavedrom.h"
 #include <functional>
 #include <stdexcept>
+#include "help.h"
 
 
 
@@ -14,6 +15,7 @@ int main(int argc, char** argv);
 
 
 typedef std::function<void(char**, int)> argHandler;
+extern unsigned long maxSimulationTimestamp;
 
 struct ARG
 {
@@ -125,5 +127,14 @@ void wavedromFileNameOutArgHandler(char** argArgs, int argArgsCount)
     simParams::outputWavedromFileName = argArgs[0];
 }
 
+void simulationTimeArgHandler(char** argArgs, int argArgsCount)
+{
+    maxSimulationTimestamp = stoll(argArgs[0]);
+}
+
+void helpArgHandler(char** argArgs, int argArgsCount)
+{
+    std::cout << HELP_MSG << std::endl;
+}
 
 #endif

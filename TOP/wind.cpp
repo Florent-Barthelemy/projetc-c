@@ -1,5 +1,6 @@
 #include "wind.h"
 
+unsigned long maxSimulationTimestamp = 20;
 
 DotLogicParserConfig simParams::dotLogParserConfig;
 string simParams::compilationName = "comp_0";
@@ -57,7 +58,21 @@ int main(int argc, char** argv)
         wavedromFileNameOutArg.handler = wavedromFileNameOutArgHandler;
         argMapper.addArg(&wavedromFileNameOutArg);
         
+        ARG timestampArg = {
+            "--timestamp",
+            "-t",
+            1,
+            simulationTimeArgHandler
+        };
+        argMapper.addArg(&timestampArg);
 
+        ARG helpArg = {
+            "--help",
+            "-h",
+            0,
+            helpArgHandler
+        };
+        argMapper.addArg(&helpArg);
 
 
         argv += 1; //starts the argv[0] at [1] element
@@ -95,14 +110,12 @@ int main(int argc, char** argv)
             for(map<string, NODE_CONN<LOGICSTATE>*>::iterator inputsIT = circuitIT->second->getInputs().begin(); inputsIT != circuitIT->second->getInputs().end(); ++inputsIT)
             {
                 circuitIT->second->connIn(inputsIT->first, stimulis.getNodeConn(inputsIT->first));
-                cout << inputsIT->first << "|";
             }
 
         for(map<string, Module*>::iterator circuitIT = circuits->begin(); circuitIT != circuits->end(); ++circuitIT)
             for(map<string, NODE_CONN<LOGICSTATE>>::iterator outputsIT = circuitIT->second->getOutputs().begin(); outputsIT != circuitIT->second->getOutputs().end(); ++outputsIT)
             {
                 acquisition.registerAcquisition(&outputsIT->second, outputsIT->first);
-                cout << outputsIT->first << "|";
             }
 
         //checking modules I/O connectivity
@@ -111,23 +124,10 @@ int main(int argc, char** argv)
             modulesIt->second->checkConnectivity_IO();
         }
 
-        for(long iTimestamp = 0; iTimestamp < 4; iTimestamp++)
+        for(long iTimestamp = 0; iTimestamp < maxSimulationTimestamp; iTimestamp++)
         {
             stimulis.updateStimuliNodes(iTimestamp);
             acquisition.acquire(iTimestamp);
-            cout << endl;
-
-            for(map<string, Module*>::iterator circuitIT = circuits->begin(); circuitIT != circuits->end(); ++circuitIT)
-                for(map<string, NODE_CONN<LOGICSTATE>*>::iterator inputsIT = circuitIT->second->getInputs().begin(); inputsIT != circuitIT->second->getInputs().end(); ++inputsIT)
-                {
-                    cout << inputsIT->second->state << "|";
-                }
-
-            for(map<string, Module*>::iterator circuitIT = circuits->begin(); circuitIT != circuits->end(); ++circuitIT)
-                for(map<string, NODE_CONN<LOGICSTATE>>::iterator outputsIT = circuitIT->second->getOutputs().begin(); outputsIT != circuitIT->second->getOutputs().end(); ++outputsIT)
-                {
-                    cout << outputsIT->second.state << "|";
-                }
         }
 
         fstream acquisitionFile(simParams::outputWavedromFileName, ios_base::out | ios_base::trunc);
