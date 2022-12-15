@@ -9,6 +9,7 @@ string simParams::outputWavedromFileName;
 bool simParams::compilOnly = false;
 unsigned long simParams::maxSimulationTimestamp = 20;
 bool simParams::helpShown = false;
+bool simParams::showWaveViewer = false;
 
 int main(int argc, char** argv)
 {
@@ -62,6 +63,13 @@ int main(int argc, char** argv)
         wavedromFileNameOutArg.argArgsCount = 1;
         wavedromFileNameOutArg.handler = wavedromFileNameOutArgHandler;
         argMapper.addArg(&wavedromFileNameOutArg);
+
+        ARG showGuiSimResultsArg{
+            "--gui",
+            "-g",
+            0,
+            showGuiSimResultsArgHandler
+        };
         
         ARG compilationOnlyArg{
             "--compilationOnly",
@@ -104,7 +112,8 @@ int main(int argc, char** argv)
 
         if(simParams::helpShown || argc <= 0)
         {
-            std::cout << HELP_MSG << std::endl;
+            //std::cout << HELP_MSG << std::endl;
+            showHelpMessage(argMapper);
             return 0;
         }
             

@@ -33,6 +33,8 @@ struct argRegister
         SystemMessager* messager;
     
     public :
+
+        const map<string, ARG>& getMap() { return argCbkMap; }
         const ARG* getArgAt(string argName)
         {
             auto charARGptr = argCbkMap.find(argName);
@@ -90,6 +92,7 @@ struct simParams
         static string outputWavedromFileName;
 
         static bool compilOnly;
+        static bool showWaveViewer;
 
         static unsigned long maxSimulationTimestamp;
 
@@ -97,6 +100,16 @@ struct simParams
 };
 
 //===================== ARGS HANDLER DEFINITIONS =====================//
+
+void showHelpMessage(argRegister reg)
+{   
+    cout << "\n wind [args]\n";
+    for(auto argIt = reg.getMap().begin(); argIt != reg.getMap().end(); ++argIt)
+    {
+        cout << "\t" << argIt->second.fullArgName << ", " << argIt->second.aliasName
+             << " " << argIt->second.helpMessage << endl;
+    } 
+}
 
 void setSimParamsDefaultValues()
 {
@@ -146,6 +159,12 @@ void helpArgHandler(char** argArgs, int argArgsCount)
 void compilationOnlyArgHandler(char** argArgs, int argArgsCount)
 {
     simParams::compilOnly = true;
+}
+
+void showGuiSimResultsArgHandler(char** argArgs, int argArgsCount)
+{
+    cout << "Launching WindGUI wave viewer...\n";
+    simParams::showWaveViewer = true;
 }
 
 
