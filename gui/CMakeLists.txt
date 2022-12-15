@@ -26,6 +26,7 @@ set(PROJECT_SOURCES
         ../parser/wavedrom/json/jsonparsing.cpp
         ../parser/wavedrom/wavedrom.cpp
         ../parser/stimuli.cpp
+        ../parser/dotLogicParser.cpp
         ../gate/sim_node.cpp
         ../gate/logic.cpp
         ../gate/PRIMLIB/PRIMLIB.cpp
@@ -35,7 +36,7 @@ set(PROJECT_SOURCES
         ../utils/traps.cpp
         ../TOP/builder.cpp
         ../TOP/registerGate.cpp
-        ../TOP/TOP.cpp
+        ../TOP/wind.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -61,7 +62,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets -static)
 
 set_target_properties(gui PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
