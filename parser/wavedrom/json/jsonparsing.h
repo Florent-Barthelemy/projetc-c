@@ -15,6 +15,7 @@ struct DELIM
 
 const DELIM jsonDelims[] = {
     {"\"", TOGGLE_STRING},
+    {"'", TOGGLE_STRING},
     {" ", DISCARD},
     {"\n", DISCARD},
     {"\t", DISCARD},

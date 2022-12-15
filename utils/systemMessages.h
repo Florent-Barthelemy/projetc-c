@@ -144,7 +144,7 @@ void SystemMessager::SYNATX_ERROR(std::string msg, unsigned long line)
     }
 
     callTrap(_SYNTAX_ERR);
-    throw new ERR(msg);
+    throw ERR(msg);
 }
 
 template <typename ERR>
@@ -159,7 +159,7 @@ void SystemMessager::ERROR(std::string msg)
     }
 
     callTrap(_ERROR);
-    throw new ERR(msg);
+    throw ERR(msg);
 }
 
 

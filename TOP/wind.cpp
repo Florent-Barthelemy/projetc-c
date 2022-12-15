@@ -12,6 +12,8 @@ bool simParams::compilOnly = false;
 
 int main(int argc, char** argv)
 {
+    try
+    {
         SystemMessager messager("windSim");
 
 
@@ -151,4 +153,11 @@ int main(int argc, char** argv)
 
         acquisitionFile.close();
         stimuliFile.close();
+    }
+    catch(const std::exception& e)
+    {
+        return -1;
+    }
+
+    return 0;
 }
