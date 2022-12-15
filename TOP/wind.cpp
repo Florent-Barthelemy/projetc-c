@@ -70,6 +70,7 @@ int main(int argc, char** argv)
             0,
             showGuiSimResultsArgHandler
         };
+        argMapper.addArg(&showGuiSimResultsArg);
         
         ARG compilationOnlyArg{
             "--compilationOnly",
@@ -168,6 +169,18 @@ int main(int argc, char** argv)
 
         acquisitionFile.close();
         stimuliFile.close();
+
+        if(simParams::showWaveViewer)
+        {
+            //starts windGUI
+            messager.INFO("Launching WindGUI wave viewer...\n");
+
+            #ifdef _WIN32
+            std::system(("windGUI.exe " + simParams::outputWavedromFileName).c_str());
+            #elif __unix
+            std::system(("./windGUI " + simParams::outputWavedromFileName).c_str());
+            #endif
+        }
     }
     catch(const std::exception& e)
     {

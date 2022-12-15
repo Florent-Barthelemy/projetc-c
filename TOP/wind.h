@@ -163,7 +163,11 @@ void compilationOnlyArgHandler(char** argArgs, int argArgsCount)
 
 void showGuiSimResultsArgHandler(char** argArgs, int argArgsCount)
 {
-    cout << "Launching WindGUI wave viewer...\n";
+    if(simParams::outputWavedromFileName.size() == 0)
+    {
+        simParams::outputWavedromFileName = "outwave.json";
+    }
+
     simParams::showWaveViewer = true;
 }
 
