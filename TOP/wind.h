@@ -5,6 +5,7 @@
 #include "../parser/dotLogicParser.h"
 #include "../utils/systemMessages.h"
 #include "../parser/wavedrom/wavedrom.h"
+#include "../utils/traps.h"
 #include <functional>
 #include <stdexcept>
 #include "help.h"
@@ -88,6 +89,8 @@ struct simParams
         static string stimuliFile;
 
         static string outputWavedromFileName;
+
+        static bool compilOnly;
 };
 
 //===================== ARGS HANDLER DEFINITIONS =====================//
@@ -135,6 +138,11 @@ void simulationTimeArgHandler(char** argArgs, int argArgsCount)
 void helpArgHandler(char** argArgs, int argArgsCount)
 {
     std::cout << HELP_MSG << std::endl;
+}
+
+void compilationOnlyArgHandler(char** argArgs, int argArgsCount)
+{
+    simParams::compilOnly = true;
 }
 
 #endif
