@@ -27,6 +27,7 @@ int main(int argc, char** argv)
         dotCompatibleArg.aliasName = "-dc";
         dotCompatibleArg.argArgsCount = 0;
         dotCompatibleArg.handler = dotCompatArgHandler;
+        dotCompatibleArg.helpMessage = "help";
         argMapper.addArg(&dotCompatibleArg);
 
         ARG dotFileArg;
@@ -105,15 +106,13 @@ int main(int argc, char** argv)
             ARG argToCall = *argMapper.getArgAt(argv[i]);
             
             argToCall.handler(argv+(i+1), argToCall.argArgsCount);
-            
-
             i += argToCall.argArgsCount;
         }
 
         if(simParams::helpShown || argc <= 0)
         {
-            //std::cout << HELP_MSG << std::endl;
-            showHelpMessage(argMapper);
+            std::cout << HELP_MSG << std::endl;
+            //showHelpMessage(argMapper);
             return 0;
         }
             
