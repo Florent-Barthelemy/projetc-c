@@ -27,7 +27,7 @@ int main(int argc, char** argv)
         dotCompatibleArg.aliasName = "-dc";
         dotCompatibleArg.argArgsCount = 0;
         dotCompatibleArg.handler = dotCompatArgHandler;
-        dotCompatibleArg.helpMessage = "help";
+        dotCompatibleArg.helpMessage = "activate compatibility mode for dot files.";
         argMapper.addArg(&dotCompatibleArg);
 
         ARG dotFileArg;
@@ -35,6 +35,7 @@ int main(int argc, char** argv)
         dotFileArg.aliasName = "-f";
         dotFileArg.argArgsCount = 1;
         dotFileArg.handler = dotFileArgHandler;
+        dotFileArg.helpMessage = "dot circuit description to simulate.";
         argMapper.addArg(&dotFileArg);
 
         ARG stimuliFileArg;
@@ -42,6 +43,7 @@ int main(int argc, char** argv)
         stimuliFileArg.aliasName = "-s";
         stimuliFileArg.argArgsCount = 1;
         stimuliFileArg.handler = stimuliFileArgHandler;
+        stimuliFileArg.helpMessage = "wavedrom stimuli file name.";
         argMapper.addArg(&stimuliFileArg);
 
         ARG compilationName;
@@ -49,6 +51,7 @@ int main(int argc, char** argv)
         compilationName.aliasName = "-chn";
         compilationName.argArgsCount = 1;
         compilationName.handler = compilationNameArgHandler;
+        compilationName.helpMessage = "sets the compilation name.";
         argMapper.addArg(&compilationName);
 
         ARG deltaCyclesArg;
@@ -56,6 +59,7 @@ int main(int argc, char** argv)
         deltaCyclesArg.aliasName = "-dlt";
         deltaCyclesArg.argArgsCount = 1;
         deltaCyclesArg.handler = deltaCyclesArgHandler;
+        deltaCyclesArg.helpMessage = "sets the maximum delta cycle. Default is 10.";
         argMapper.addArg(&deltaCyclesArg);
 
         ARG wavedromFileNameOutArg;
@@ -63,20 +67,24 @@ int main(int argc, char** argv)
         wavedromFileNameOutArg.aliasName = "-o";
         wavedromFileNameOutArg.argArgsCount = 1;
         wavedromFileNameOutArg.handler = wavedromFileNameOutArgHandler;
+        wavedromFileNameOutArg.helpMessage = "output wavedrom file name.";
         argMapper.addArg(&wavedromFileNameOutArg);
 
         ARG showGuiSimResultsArg{
             "--gui",
             "-g",
             0,
-            showGuiSimResultsArgHandler
+            showGuiSimResultsArgHandler,
+            "starts the wave GUI"
         };
+        argMapper.addArg(&showGuiSimResultsArg);
         
         ARG compilationOnlyArg{
             "--compilationOnly",
             "-c",
             0,
-            compilationOnlyArgHandler
+            compilationOnlyArgHandler,
+            "compiles without simulating."
         };
         argMapper.addArg(&compilationOnlyArg);
         
@@ -84,7 +92,8 @@ int main(int argc, char** argv)
             "--timestamp",
             "-t",
             1,
-            simulationTimeArgHandler
+            simulationTimeArgHandler,
+            "sets the simulation time. Default is 20."
         };
         argMapper.addArg(&timestampArg);
 
@@ -92,7 +101,8 @@ int main(int argc, char** argv)
             "--help",
             "-h",
             0,
-            helpArgHandler
+            helpArgHandler,
+            "displays this help message."
         };
         argMapper.addArg(&helpArg);
 
@@ -167,6 +177,18 @@ int main(int argc, char** argv)
 
         acquisitionFile.close();
         stimuliFile.close();
+
+        if(simParams::showWaveViewer)
+        {
+            //starts windGUI
+            messager.INFO("Launching WindGUI wave viewer...\n");
+
+            #ifdef _WIN32
+            std::system(("windGUI.exe " + simParams::outputWavedromFileName).c_str());
+            #elif __unix
+            std::system(("./windGUI " + simParams::outputWavedromFileName).c_str());
+            #endif
+        }
     }
     catch(const std::exception& e)
     {
