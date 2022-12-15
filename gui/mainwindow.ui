@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>windGUI</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QListWidget" name="waveList">
